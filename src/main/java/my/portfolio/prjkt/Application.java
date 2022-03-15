@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 @Theme(value = "myportfolio")
-@PWA(name = "MyPortfolio", shortName = "MyPortfolio", offlineResources = {"images/logo.png"})
+@PWA(name = "MyPortfolio", shortName = "MyPortfolio", iconPath = "icons/myicon.png", offlineResources = {"images/logo.png"})
 @NpmPackage(value = "line-awesome", version = "1.3.0")
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
