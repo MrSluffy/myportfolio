@@ -1,21 +1,22 @@
 package my.portfolio.prjkt.views.project;
 
 import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.component.notification.Notification;
 
-public class ImageListViewCard extends ListItem {
+public class MaterialCardView extends ListItem {
 
-    public ImageListViewCard(String title, String description, String url, String tag, String date) {
+    public MaterialCardView(String title, String description, Image image, String url, String tag, String date) {
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
 
         Div div = new Div();
         div.addClassNames("bg-contrast", "flex items-center", "justify-center", "mb-m", "overflow-hidden",
                 "rounded-m w-full");
         div.setHeight("160px");
-
-        Image image = new Image();
+        if(image == null){
+            image = new Image();
+            image.setSrc(url);
+        }
         image.setWidth("100%");
-        image.setSrc(url);
+
         image.setAlt(title);
 
         div.add(image);
@@ -36,8 +37,7 @@ public class ImageListViewCard extends ListItem {
         badge.setText(tag);
 
         addClickListener(listItemClickEvent -> {
-            getUI().ifPresent(ui -> ui.getPage().open("https://github.com/MrSluffy"));
-            Notification.show("I click this");
+            getUI().ifPresent(ui -> ui.getPage().open(url));
         });
 
         add(div, header, subtitle, paragraph, badge);

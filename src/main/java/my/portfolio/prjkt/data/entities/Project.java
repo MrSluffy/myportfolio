@@ -52,10 +52,6 @@ public class Project extends AbstractEntity implements Serializable {
         return super.hashCode();
     }
 
-    public byte[] getProfilePicture() {
-        return profilePicture;
-    }
-
     public String getUrlPrjkt() {
         return urlPrjkt;
     }
@@ -78,5 +74,13 @@ public class Project extends AbstractEntity implements Serializable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

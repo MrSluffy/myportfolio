@@ -62,7 +62,7 @@ public class DataGenerator {
 
             prjktRepository.saveAll(prjkts);
 
-            projectRepository.saveAll(projectList);
+//            projectRepository.saveAll(projectList);
 
 
 

@@ -163,7 +163,11 @@
             <artifactId>compani</artifactId>
             <version>1.1.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.flowingcode.addons</groupId>
+            <artifactId>font-awesome-iron-iconset</artifactId>
+            <version>3.0.0</version>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

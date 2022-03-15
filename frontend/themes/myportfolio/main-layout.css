@@ -67,5 +67,18 @@
     color: rgba(230, 215, 255, 0.63)
 }
 
+.db-dialog{
+    border-radius: var(--lumo-border-radius);
+}
+
+.btn-dialog{
+    color: rgba(230, 215, 255, 0.78)
+}
+
+.headline{
+    padding-bottom: 4%;
+    color: rgba(230, 215, 255, 0.78)
+}
+
 
 

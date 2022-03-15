@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IProjectRepository extends JpaRepository<Project, Integer> {
     /*
@@ -12,4 +14,7 @@ public interface IProjectRepository extends JpaRepository<Project, Integer> {
      */
     @EntityGraph(attributePaths={"profilePicture"})
     Project findWithPropertyPictureAttachedById(Integer id);
+
+    Optional<Project> findProjectByTitlePrjkt(String titlePrjkt);
+
 }
