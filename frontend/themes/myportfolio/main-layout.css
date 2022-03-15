@@ -1,36 +1,71 @@
-[slot='drawer'] {
-  background-image: linear-gradient(0deg, var(--lumo-shade-5pct), var(--lumo-shade-5pct));
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;900&display=swap');
+
+.tab-main{
+    padding-right: 3%;
+    padding-top: 10px;
 }
 
-[slot='drawer'] nav a {
-  text-decoration: none;
-  transition: color 140ms;
+.image-shape{
+    background-blend-mode: luminosity;
+    filter: opacity(17%) grayscale(105%) brightness(294%);
+    transform: rotate(-0.53deg);
+    position: absolute;
+    width: 950.08px;
+    height: 587.75px;
+    left: 558px;
+    top: 100.6px;
 }
 
-[slot='drawer'] nav a .la {
-  margin-top: calc(var(--lumo-space-xs) * 0.5);
+.image-business{
+    position: absolute;
+    width: 588px;
+    height: 414px;
+    top: 195px;
+    left: 830px;
+}
+.h1-head{
+    position: absolute;
+    width: 485px;
+    height: 292px;
+    left: 83px;
+    top: 101px;
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 1000;
+    font-size: 96px;
+    line-height: 144px;
+
+    color: #FFFFFF;
 }
 
-[slot='drawer'] nav a::before {
-  border-radius: var(--lumo-border-radius);
-  bottom: calc(var(--lumo-space-xs) * 0.5);
-  content: '';
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: calc(var(--lumo-space-xs) * 0.5);
-  transition: background-color 140ms;
+.text-content{
+    position: absolute;
+    width: 485px;
+    height: 159px;
+    left: 83px;
+    top: 350px;
+
+    font-family: 'Poppins', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 28px;
+    line-height: 42px;
+
+    color: #FFFFFF
 }
 
-[slot='drawer'] nav a[highlight] {
-  color: var(--lumo-primary-text-color);
+.header-h2{
+    padding-bottom: 3%;
+    color: rgb(230, 215, 255)
 }
 
-[slot='drawer'] nav a[highlight]::before {
-  background-color: var(--lumo-primary-color-10pct);
+.btn-icon{
+    height: 83px;
+    width: 83px;
+    padding: 10px;
+    opacity: 80%;
+    color: rgba(230, 215, 255, 0.63)
 }
 
-[slot='drawer'] footer vaadin-context-menu {
-  align-items: center;
-  display: flex;
-}
+
+

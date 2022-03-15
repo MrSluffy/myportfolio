@@ -1,14 +1,11 @@
-package com.example.application.views.imagelist;
+package my.portfolio.prjkt.views.project;
 
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.notification.Notification;
 
 public class ImageListViewCard extends ListItem {
 
-    public ImageListViewCard(String text, String url) {
+    public ImageListViewCard(String title, String description, String url, String tag, String date) {
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
 
         Div div = new Div();
@@ -19,27 +16,31 @@ public class ImageListViewCard extends ListItem {
         Image image = new Image();
         image.setWidth("100%");
         image.setSrc(url);
-        image.setAlt(text);
+        image.setAlt(title);
 
         div.add(image);
 
         Span header = new Span();
         header.addClassNames("text-xl", "font-semibold");
-        header.setText("Title");
+        header.setText(title);
 
         Span subtitle = new Span();
         subtitle.addClassNames("text-s", "text-secondary");
-        subtitle.setText("Card subtitle");
+        subtitle.setText(date);
 
-        Paragraph description = new Paragraph(
-                "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.");
-        description.addClassName("my-m");
+        Paragraph paragraph = new Paragraph(description);
+        paragraph.addClassName("my-m");
 
         Span badge = new Span();
         badge.getElement().setAttribute("theme", "badge");
-        badge.setText("Label");
+        badge.setText(tag);
 
-        add(div, header, subtitle, description, badge);
+        addClickListener(listItemClickEvent -> {
+            getUI().ifPresent(ui -> ui.getPage().open("https://github.com/MrSluffy"));
+            Notification.show("I click this");
+        });
+
+        add(div, header, subtitle, paragraph, badge);
 
     }
 }
