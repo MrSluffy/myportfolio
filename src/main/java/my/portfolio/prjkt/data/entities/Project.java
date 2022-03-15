@@ -14,7 +14,6 @@ public class Project extends AbstractEntity implements Serializable {
     private String titlePrjkt;
     private String descriptionPrjkt;
 
-    @Column(length = 5200)
     private String urlPrjkt;
 
     @ManyToOne
