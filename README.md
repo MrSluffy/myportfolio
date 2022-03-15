@@ -34,7 +34,6 @@ Once the JAR file is built, you can run it using
 - `themes` folder in `frontend/` contains the custom CSS styles.
 
 ### Resources links
-####Start Vaadin
 - Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
 - Follow the tutorials at [vaadin.com/tutorials](https://vaadin.com/tutorials).
 - Watch training videos and get certified at [vaadin.com/learn/training](https://vaadin.com/learn/training).
@@ -44,8 +43,6 @@ Once the JAR file is built, you can run it using
 - Discover Vaadin's set of CSS utility classes that enable building any UI without custom CSS in the [docs](https://vaadin.com/docs/latest/ds/foundation/utility-classes). 
 - Find a collection of solutions to common use cases in [Vaadin Cookbook](https://cookbook.vaadin.com/).
 - Add-ons at [vaadin.com/directory](https://vaadin.com/directory).
-
-####Start Spring
 - Learn at [spring.io/projects](https://https://spring.io/projects/spring-boot#learn).
 - Wonderful platform to study [baeldung.com/start-here](https://www.baeldung.com/start-here).
 
