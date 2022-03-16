@@ -6,24 +6,24 @@
     .home-view .image-shape,
     .home-view .h1-head,
     .home-view .text-content,
-    .home-view .content-layout{
+    .home-view .content-layout {
         transition: all 200ms cubic-bezier(0.4, 0.2, 0.2, 1);
     }
 
-    .home-view .image-business{
+    .home-view .image-business {
         width: 388px;
         height: 283px;
         left: 80px;
         top: 140px;
     }
 
-    .home-view .image-shape{
+    .home-view .image-shape {
         width: 550.08px;
         height: 387.75px;
         left: -30px;
     }
 
-    .home-view .h1-head{
+    .home-view .h1-head {
         line-height: 100px;
         position: center;
         left: 50px;
@@ -31,7 +31,7 @@
         top: 387.75px;
     }
 
-    .home-view .text-content{
+    .home-view .text-content {
         font-weight: 500;
         font-size: 18px;
         left: 50px;
@@ -40,12 +40,25 @@
     }
 }
 
-.tab-main{
+.tab-main {
     padding-right: 3%;
     padding-top: 10px;
 }
 
-.image-shape{
+.material-list{
+    transition: transform .2s;
+}
+
+.material-list:hover {
+    transform: scale(1.01);
+}
+
+.card-image{
+    object-fit: cover;
+    scale: 1.5;
+}
+
+.image-shape {
     background-blend-mode: luminosity;
     filter: opacity(17%) grayscale(105%) brightness(294%);
     transform: rotate(-0.53deg);
@@ -56,14 +69,15 @@
     top: 100.6px;
 }
 
-.image-business{
+.image-business {
     position: absolute;
     width: 588px;
     height: 414px;
     top: 195px;
     left: 830px;
 }
-.h1-head{
+
+.h1-head {
     position: absolute;
     width: 485px;
     height: 292px;
@@ -73,12 +87,42 @@
     font-style: normal;
     font-weight: 1000;
     font-size: 96px;
-    line-height: 144px;
+    line-height: 124px;
 
     color: #FFFFFF;
 }
 
-.text-content{
+.text-qoute{
+    position: absolute;
+    width: 391px;
+    height: 126px;
+    left: 83px;
+    top: 527px;
+
+    font-family: 'Poppins', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 36px;
+    transition: transform .2s;
+
+    color: #C8C8C8;
+}
+
+
+.content-layout .text-qoute{
+    color: transparent;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.83);
+}
+
+.text-qoute:hover{
+    color: #C8C8C8;
+    transform: scale(1.01);
+    text-shadow: none;
+
+}
+
+.text-content {
     position: absolute;
     width: 485px;
     height: 159px;
@@ -94,12 +138,12 @@
     color: #FFFFFF
 }
 
-.header-h2{
+.header-h2 {
     padding-bottom: 3%;
     color: rgb(230, 215, 255)
 }
 
-.btn-icon{
+.btn-icon {
     height: 83px;
     width: 83px;
     padding: 10px;
@@ -107,15 +151,15 @@
     color: rgba(230, 215, 255, 0.63)
 }
 
-.db-dialog{
+.db-dialog {
     border-radius: var(--lumo-border-radius);
 }
 
-.btn-dialog{
+.btn-dialog {
     color: rgba(230, 215, 255, 0.78)
 }
 
-.headline{
+.headline {
     padding-bottom: 4%;
     color: rgba(230, 215, 255, 0.78)
 }

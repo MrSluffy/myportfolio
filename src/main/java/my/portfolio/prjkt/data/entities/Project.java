@@ -19,6 +19,8 @@ public class Project extends AbstractEntity {
 
     private String urlPrjkt;
 
+    private String urlDownloadPrjkt;
+
     @ManyToOne
     private TypePrjkt typePrjkt;
 
@@ -84,5 +86,13 @@ public class Project extends AbstractEntity {
 
     public void setProfilePicture(byte[] profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public String getUrlDownloadPrjkt() {
+        return urlDownloadPrjkt;
+    }
+
+    public void setUrlDownloadPrjkt(String urlDownloadPrjkt) {
+        this.urlDownloadPrjkt = urlDownloadPrjkt;
     }
 }

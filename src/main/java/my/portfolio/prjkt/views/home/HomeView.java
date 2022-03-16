@@ -1,6 +1,7 @@
 package my.portfolio.prjkt.views.home;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -15,7 +16,7 @@ import my.portfolio.prjkt.views.MainLayout;
 import java.util.Random;
 
 @PageTitle("Home")
-@Route(value = "home", layout = MainLayout.class)
+@Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 public class HomeView extends VerticalLayout {
 
@@ -47,10 +48,12 @@ public class HomeView extends VerticalLayout {
         imgBusiness.addClassName("image-business");
         var text = new H4("I’m a developer with some unique ideas and knowledge in terms of technology.");
         text.addClassName("text-content");
+        var qoute = new H3(" \"Great things start from the small ideas\"");
+        qoute.addClassName("text-qoute");
         layout.addClassNames("flex", "items-start", "p-l", "rounded-l");
         layout.addClassName("content-layout");
 
-        layout.add(head, text, imgBusiness, imgShape);
+        layout.add(head, text, qoute, imgBusiness, imgShape);
         return layout;
     }
 

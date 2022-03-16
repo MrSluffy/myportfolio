@@ -68,7 +68,8 @@ public class ProjectServiceImp implements IProjectService {
                                TypePrjkt typePrjkt,
                                LocalDate date,
                                String description,
-                               String url) {
+                               String url,
+                               String urlDownload) {
         Project project = new Project();
         project.setTitlePrjkt(title);
         project.setProfilePicture(imageBytes);
@@ -76,6 +77,7 @@ public class ProjectServiceImp implements IProjectService {
         project.setDate(date.toString());
         project.setDescriptionPrjkt(description);
         project.setUrlPrjkt(url);
+        project.setUrlDownloadPrjkt(urlDownload);
         if(projectRepository.findProjectByTitlePrjkt(title).isPresent()){
             throw new IllegalStateException(title +" is already exist");
         } else {

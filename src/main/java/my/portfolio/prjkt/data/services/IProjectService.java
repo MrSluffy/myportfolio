@@ -21,7 +21,7 @@ public interface IProjectService {
     long getAllProjectCount();
 
 
-    void saveNewProject(byte[] imageBytes, String title, TypePrjkt typePrjkt, LocalDate date, String description, String url) throws IOException;
+    void saveNewProject(byte[] imageBytes, String title, TypePrjkt typePrjkt, LocalDate date, String description, String url, String urlDownload) throws IOException;
 
     Optional<Project> findProjectBy(String title);
 

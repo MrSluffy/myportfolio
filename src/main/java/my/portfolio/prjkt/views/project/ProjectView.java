@@ -51,6 +51,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
 
 
     TextField titleField = new TextField();
+    TextField urlDownload = new TextField();
     TextArea descriptionField = new TextArea();
     TextField urlField = new TextField();
 
@@ -97,7 +98,6 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 ImageIO.write(inputImage, "png", pngContent);
                 imageBytes = pngContent.toByteArray();
-                configureProject();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -186,7 +186,13 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         });
 
         urlField.setWidthFull();
-        urlField.setLabel("URL");
+        urlField.setLabel("Source code URL");
+        urlField.setHelperText("https://www.github.com/source.. etc");
+
+        urlDownload.setWidthFull();
+        urlDownload.setLabel("Download URL");
+        urlDownload.setHelperText("https://play.google.com/store/apps/details?id=... etc");
+
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClassName("btn-dialog");
@@ -199,7 +205,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
                         comboBox.getValue(),
                         singleFormatDatePicker.getValue(),
                         descriptionField.getValue(),
-                        urlField.getValue());
+                        urlField.getValue(), urlDownload.getValue());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -211,7 +217,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         hl.add(save);
 
 
-        layout.add(header, upload, titleField, comboBox, badges, descriptionField, singleFormatDatePicker, urlField, hl);
+        layout.add(header, upload, titleField, comboBox, badges, descriptionField, singleFormatDatePicker, urlField, urlDownload, hl);
 
         return layout;
     }
@@ -221,14 +227,16 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
                              TypePrjkt typePrjkt,
                              LocalDate date,
                              String description,
-                             String url) throws IOException {
+                             String url,
+                             String urlDownload) throws IOException {
         serviceImp.saveNewProject(
                 imageBytes,
                 title,
                 typePrjkt,
                 date,
                 description,
-                url);
+                url,
+                urlDownload);
         formDialog.close();
         configureProject();
     }
@@ -257,7 +265,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
     private void configureProject() {
         for(Project prjkt : serviceImp.getAllProject()){
             imageContainer.add(new MaterialCardView(prjkt.getTitlePrjkt(), prjkt.getDescriptionPrjkt(),
-                    serviceImp.generateImage(prjkt),prjkt.getUrlPrjkt(), prjkt.getTypePrjkt().getName(), prjkt.getDate()));
+                    serviceImp.generateImage(prjkt),prjkt.getUrlPrjkt(), prjkt.getTypePrjkt().getName(), prjkt.getDate(), prjkt.getUrlDownloadPrjkt()));
         }
 
         btn.addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
