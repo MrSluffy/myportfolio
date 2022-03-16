@@ -1,8 +1,6 @@
 package my.portfolio.prjkt.views.home;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
@@ -12,14 +10,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import de.mekaso.vaadin.addon.compani.AnimatedComponent;
-import de.mekaso.vaadin.addon.compani.Animator;
-import de.mekaso.vaadin.addon.compani.animation.AnimationBuilder;
-import de.mekaso.vaadin.addon.compani.animation.AnimationTypes;
-import de.mekaso.vaadin.addon.compani.effect.AttentionSeeker;
-import de.mekaso.vaadin.addon.compani.effect.Delay;
-import de.mekaso.vaadin.addon.compani.effect.Repeat;
-import de.mekaso.vaadin.addon.compani.effect.Speed;
 import my.portfolio.prjkt.views.MainLayout;
 
 import java.util.Random;
@@ -34,12 +24,10 @@ public class HomeView extends VerticalLayout {
 
     private final String[] mRandomGreetings = new String[]{"simple.", "unique.", "Andrew"};
 
-    Animator animator = Animator.init(UI.getCurrent());
-
-
-    Div labelDiv = new Div();
-
     public HomeView() {
+
+        addClassName("home-view");
+        addClassNames("flex", "items-start", "p-l", "rounded-l");
 
         setSpacing(false);
 
@@ -56,22 +44,13 @@ public class HomeView extends VerticalLayout {
         Image imgBusiness = new Image("images/image-business.png", "business");
         Label head = new Label("Hi, I'm " + getRandomGreetings());
         head.addClassName("h1-head");
-        labelDiv.add(head);
         imgBusiness.addClassName("image-business");
         var text = new H4("I’m a developer with some unique ideas and knowledge in terms of technology.");
         text.addClassName("text-content");
-        layout.add(labelDiv, text, imgBusiness, imgShape);
-        AnimatedComponent animatedLabel = animator.prepareComponent(labelDiv);
-        labelDiv.addClickListener(divClickEvent -> animatedLabel.animate(
-                AnimationBuilder
-                        .createBuilder()
-                        .create(AnimationTypes.ComponentAnimation.class)
-                        .withEffect(AttentionSeeker.pulse)
-                        .withSpeed(Speed.normal)
-                        .withDelay(Delay.noDelay)
-                        .repeat(Repeat.Infinite)
-        ));
+        layout.addClassNames("flex", "items-start", "p-l", "rounded-l");
+        layout.addClassName("content-layout");
 
+        layout.add(head, text, imgBusiness, imgShape);
         return layout;
     }
 

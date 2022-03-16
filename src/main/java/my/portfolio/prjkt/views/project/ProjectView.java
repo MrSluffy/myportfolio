@@ -28,7 +28,6 @@ import my.portfolio.prjkt.data.entities.TypePrjkt;
 import my.portfolio.prjkt.data.services.impl.ProjectServiceImp;
 import my.portfolio.prjkt.views.MainLayout;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -235,16 +234,16 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
     }
 
 
-    private Span createFilterBadge(String profession) {
+    private Span createFilterBadge(String prjktType) {
         Button clearButton = new Button(VaadinIcon.CLOSE_SMALL.create());
         clearButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST, ButtonVariant.LUMO_TERTIARY_INLINE);
         clearButton.getStyle().set("margin-inline-start", "var(--lumo-space-xs)");
         // Accessible button name
-        clearButton.getElement().setAttribute("aria-label", "Clear filter: " + profession);
+        clearButton.getElement().setAttribute("aria-label", "Clear filter: " + prjktType);
         // Tooltip
-        clearButton.getElement().setAttribute("title", "Clear filter: " + profession);
+        clearButton.getElement().setAttribute("title", "Clear filter: " + prjktType);
 
-        Span badge = new Span(new Span(profession), clearButton);
+        Span badge = new Span(new Span(prjktType), clearButton);
         badge.getElement().getThemeList().add("badge contrast pill");
 
         // Add handler for removing the badge

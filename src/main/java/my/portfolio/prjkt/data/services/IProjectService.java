@@ -24,4 +24,6 @@ public interface IProjectService {
     void saveNewProject(byte[] imageBytes, String title, TypePrjkt typePrjkt, LocalDate date, String description, String url) throws IOException;
 
     Optional<Project> findProjectBy(String title);
+
+    void addTypeProject(String prjktType);
 }

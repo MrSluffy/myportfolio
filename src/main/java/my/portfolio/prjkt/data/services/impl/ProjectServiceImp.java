@@ -43,6 +43,10 @@ public class ProjectServiceImp implements IProjectService {
 
     }
 
+    private Project getProjectById(Integer id){
+        return projectRepository.getById(id);
+    }
+
     @Override
     public List<Project> getAllProject() {
         return projectRepository.findAll();
@@ -83,6 +87,10 @@ public class ProjectServiceImp implements IProjectService {
     @Override
     public Optional<Project> findProjectBy(String title) {
         return projectRepository.findProjectByTitlePrjkt(title);
+    }
+
+    @Override
+    public void addTypeProject(String prjktType) {
     }
 
     /**

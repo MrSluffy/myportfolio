@@ -1,5 +1,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;900&display=swap');
 
+
+@media all and (max-width: 600px) {
+    .home-view .image-business,
+    .home-view .image-shape,
+    .home-view .h1-head,
+    .home-view .text-content,
+    .home-view .content-layout{
+        transition: all 200ms cubic-bezier(0.4, 0.2, 0.2, 1);
+    }
+
+    .home-view .image-business{
+        width: 388px;
+        height: 283px;
+        left: 80px;
+        top: 140px;
+    }
+
+    .home-view .image-shape{
+        width: 550.08px;
+        height: 387.75px;
+        left: -30px;
+    }
+
+    .home-view .h1-head{
+        line-height: 100px;
+        position: center;
+        left: 50px;
+        font-size: 76px;
+        top: 387.75px;
+    }
+
+    .home-view .text-content{
+        font-weight: 500;
+        font-size: 18px;
+        left: 50px;
+        top: 587.75px;
+
+    }
+}
+
 .tab-main{
     padding-right: 3%;
     padding-top: 10px;
