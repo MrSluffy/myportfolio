@@ -11,10 +11,7 @@ public class MaterialCardView extends ListItem {
         div.addClassNames("bg-contrast", "flex items-center", "justify-center", "mb-m", "overflow-hidden",
                 "rounded-m w-full");
         div.setHeight("160px");
-        if(image == null){
-            image = new Image();
-            image.setSrc(url);
-        }
+
         image.setWidth("100%");
 
         image.setAlt(title);

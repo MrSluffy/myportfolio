@@ -1,16 +1,18 @@
 package my.portfolio.prjkt.data.entities;
 
 import my.portfolio.prjkt.data.entities.abstracts.AbstractEntity;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 
 @Entity
-public class Project extends AbstractEntity implements Serializable {
+public class Project extends AbstractEntity {
 
-    @Basic(fetch = FetchType.LAZY)
+    @Lob
+    @Type(type = "org.hibernate.type.ImageType")
     private byte[] profilePicture;
-
     private String titlePrjkt;
     private String descriptionPrjkt;
 

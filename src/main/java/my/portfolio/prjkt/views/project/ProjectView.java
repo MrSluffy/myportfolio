@@ -28,6 +28,7 @@ import my.portfolio.prjkt.data.entities.TypePrjkt;
 import my.portfolio.prjkt.data.services.impl.ProjectServiceImp;
 import my.portfolio.prjkt.views.MainLayout;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -68,10 +69,9 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
 
         btn = new Button(icon);
 
+        initImageContainer();
 
         configureProject();
-
-        initImageContainer();
 
         VerticalLayout dialogLayout = createDialogLayout(formDialog);
         dialogLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
@@ -98,6 +98,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
                 ByteArrayOutputStream pngContent = new ByteArrayOutputStream();
                 ImageIO.write(inputImage, "png", pngContent);
                 imageBytes = pngContent.toByteArray();
+                configureProject();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -163,6 +164,10 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         singleFormatDatePicker.setI18n(datePicker);
         singleFormatDatePicker.setWidthFull();
 
+        if(singleFormatDatePicker.getValue() == null){
+            singleFormatDatePicker.setValue(LocalDate.now());
+        }
+
 
         formDialog.setModal(false);
         formDialog.setDraggable(true);
@@ -187,13 +192,19 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClassName("btn-dialog");
 
-        save.addClickListener(buttonClickEvent -> addNewPrjkt(
-                imageBytes,
-                titleField.getValue(),
-                comboBox.getValue(),
-                singleFormatDatePicker.getValue(),
-                descriptionField.getValue(),
-                urlField.getValue()));
+        save.addClickListener(buttonClickEvent -> {
+            try {
+                addNewPrjkt(
+                        imageBytes,
+                        titleField.getValue(),
+                        comboBox.getValue(),
+                        singleFormatDatePicker.getValue(),
+                        descriptionField.getValue(),
+                        urlField.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         var hl = new HorizontalLayout();
         hl.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
         hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
@@ -211,7 +222,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
                              TypePrjkt typePrjkt,
                              LocalDate date,
                              String description,
-                             String url) {
+                             String url) throws IOException {
         serviceImp.saveNewProject(
                 imageBytes,
                 title,
