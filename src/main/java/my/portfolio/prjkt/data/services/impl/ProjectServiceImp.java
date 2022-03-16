@@ -34,7 +34,7 @@ public class ProjectServiceImp implements IProjectService {
     @Override
     public Image generateImage(Project project) {
         Integer id = project.getId();
-        StreamResource sr = new StreamResource("user", () ->  {
+        StreamResource sr = new StreamResource("project", () ->  {
             Project attached = projectRepository.findWithPropertyPictureAttachedById(id);
             return new ByteArrayInputStream(attached.getProfilePicture());
         });
