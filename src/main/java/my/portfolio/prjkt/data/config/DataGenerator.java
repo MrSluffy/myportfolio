@@ -1,8 +1,10 @@
 package my.portfolio.prjkt.data.config;
 
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import my.portfolio.prjkt.data.entities.FlashCard;
 import my.portfolio.prjkt.data.entities.Project;
 import my.portfolio.prjkt.data.entities.TypePrjkt;
+import my.portfolio.prjkt.data.repository.IFlashCardRepository;
 import my.portfolio.prjkt.data.repository.IProjectRepository;
 import my.portfolio.prjkt.data.repository.ITypeRepository;
 import org.slf4j.Logger;
@@ -23,11 +25,16 @@ public class DataGenerator {
 
     private List<Project> projectList;
 
+    private List<FlashCard> flashCardList;
+
     private ExampleDataGenerator<Project> projectExampleDataGenerator;
+
+    private ExampleDataGenerator<FlashCard> flashCardExampleDataGenerator;
 
     @Bean
     CommandLineRunner loadData(IProjectRepository projectRepository,
-                               ITypeRepository prjktRepository) {
+                               ITypeRepository prjktRepository,
+                               IFlashCardRepository flashCardRepository) {
 
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
@@ -47,7 +54,16 @@ public class DataGenerator {
             projectExampleDataGenerator.setData(Project::setUrlPrjkt, DataType.PROFILE_PICTURE_URL);
             projectExampleDataGenerator.setData(Project::setDescriptionPrjkt, DataType.SENTENCE);
 
+            flashCardExampleDataGenerator = new ExampleDataGenerator<>(FlashCard.class, LocalDateTime.now());
+            flashCardExampleDataGenerator.setData(FlashCard::setCardTitle, DataType.WORD);
+            flashCardExampleDataGenerator.setData(FlashCard::setCardDetail, DataType.SENTENCE);
+            flashCardExampleDataGenerator.setData(FlashCard::setCardReference, DataType.PROFILE_PICTURE_URL);
+            flashCardExampleDataGenerator.setData(FlashCard::setCardDate, DataType.BOOK_GENRE);
+
             projectList = projectExampleDataGenerator.create(7, seed);
+
+
+            flashCardList = flashCardExampleDataGenerator.create(7, seed);
 
 
             Random r = new Random(seed);
@@ -60,7 +76,19 @@ public class DataGenerator {
                 return project;
             }).collect(Collectors.toList());
 
-            prjktRepository.saveAll(prjkts);
+            flashCardList.stream().map(flashCard -> {
+               flashCard.setCardTitle(flashCard.getCardTitle());
+               flashCard.setCardDetail(flashCard.getCardDetail());
+               flashCard.setCardReference(flashCard.getCardReference());
+               flashCard.setCardDate(flashCard.getCardDate());
+               return flashCard;
+            });
+
+            flashCardRepository.saveAll(flashCardList);
+
+            if(projectRepository.findAll().isEmpty()){
+                prjktRepository.saveAll(prjkts);
+            }
 
 //            projectRepository.saveAll(projectList);
 

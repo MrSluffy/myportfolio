@@ -172,7 +172,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         formDialog.setDraggable(true);
         formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         formDialog.setMaxHeight("80%");
-        formDialog.setMinWidth("29%");
+        formDialog.setMinWidth("33%");
 
         titleField.setWidthFull();
         titleField.setLabel("Name");
@@ -181,9 +181,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         descriptionField.setLabel("Description");
         descriptionField.setMaxLength(200);
         descriptionField.setValueChangeMode(ValueChangeMode.EAGER);
-        descriptionField.addValueChangeListener(e -> {
-            e.getSource().setHelperText(e.getValue().length() + "/" + 200);
-        });
+        descriptionField.addValueChangeListener(e -> e.getSource().setHelperText(e.getValue().length() + "/" + 200));
 
         urlField.setWidthFull();
         urlField.setLabel("Source code URL");

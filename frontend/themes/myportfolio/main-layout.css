@@ -38,6 +38,24 @@
         top: 587.75px;
 
     }
+
+
+    .home-view .text-qoute{
+        position: absolute;
+        width: 391px;
+        height: 126px;
+        left: 50px;
+        top: 707px;
+
+        font-family: 'Poppins', sans-serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 36px;
+        transition: transform .2s;
+
+        color: #C8C8C8;
+    }
 }
 
 .tab-main {
@@ -153,6 +171,7 @@
 
 .db-dialog {
     border-radius: var(--lumo-border-radius);
+    width: auto;
 }
 
 .btn-dialog {
@@ -163,6 +182,16 @@
     padding-bottom: 4%;
     color: rgba(230, 215, 255, 0.78)
 }
+
+.flash-more-btn {
+    color: rgba(230, 215, 255, 0.78);
+}
+
+.flash-card{
+    grid-column: auto;
+}
+
+
 
 
 

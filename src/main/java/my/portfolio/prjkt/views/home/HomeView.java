@@ -1,10 +1,7 @@
 package my.portfolio.prjkt.views.home;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,7 +16,6 @@ import java.util.Random;
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 public class HomeView extends VerticalLayout {
-
 
     HorizontalLayout layout = new HorizontalLayout();
 
