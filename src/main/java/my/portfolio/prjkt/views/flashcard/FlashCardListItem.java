@@ -26,6 +26,8 @@ public class FlashCardListItem extends ListItem {
 
     Dialog formDialog = new Dialog();
 
+    Dialog itemLayout = new Dialog();
+
     TextField titleField = new TextField();
     TextArea descriptionField = new TextArea();
     TextField urlField = new TextField();
@@ -35,29 +37,36 @@ public class FlashCardListItem extends ListItem {
     private final String title;
     private final String detail;
     private final String reference;
+    private final String question;
+    private final String answer;
     private final FlashCardServiceImp service;
+    HorizontalLayout horlayout = new HorizontalLayout();
 
-    public FlashCardListItem(Integer id, String title, String detail, String reference, String date, FlashCardServiceImp service) {
+    Icon confirmed;
+
+    public FlashCardListItem(Integer id, String title, String detail, String reference, String date, String question, String answer, FlashCardServiceImp service) {
         this.id = id;
         this.title = title;
         this.detail = detail;
         this.reference = reference;
+        this.question = question;
+        this.answer = answer;
         this.service = service;
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
-        Div div = new Div();
         addClassName("material-list");
-        div.addClassNames("bg-contrast", "flex items-center", "justify-center", "mb-m", "overflow-hidden",
-                "rounded-m w-full");
-        div.addClassName("material-card");
-
-        var horlayout = new HorizontalLayout();
+        this.confirmed = createIcon(VaadinIcon.CHECK, "", "");
         horlayout.addClassNames("flex", "items-start");
         horlayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         horlayout.setWidthFull();
 
+
         VerticalLayout dialogLayout = createDialogLayout(formDialog);
         dialogLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
         formDialog.add(dialogLayout);
+
+        VerticalLayout zomLayout = createLayout(itemLayout);
+        zomLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
+        itemLayout.add(zomLayout);
 
         ComponentEventListener<ClickEvent<MenuItem>> listener = e -> formDialog.open();
 
@@ -79,7 +88,7 @@ public class FlashCardListItem extends ListItem {
         subMenu.addItem("Delete", listenerDel);
         subMenu.add(new Hr());
         subMenu.addItem("Report");
-        horlayout.add(header, menuBar);
+        horlayout.add(header);
 
 
         Span subtitle = new Span();
@@ -105,14 +114,108 @@ public class FlashCardListItem extends ListItem {
 
         paragraph.addClassName("my-m");
 
+        addClickListener(event ->{
+            itemLayout.open();
+        });
 
-        add(horlayout, subtitle, anchorLayour, paragraph);
+        var bottomLayout = new HorizontalLayout();
+        bottomLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        bottomLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
+        bottomLayout.setWidthFull();
+        bottomLayout.add(menuBar);
 
+
+        add(horlayout, subtitle, anchorLayour, paragraph, bottomLayout);
+
+    }
+
+    private Icon createIcon(VaadinIcon vaadinIcon, String label, String style) {
+        Icon icon = vaadinIcon.create();
+        icon.getStyle().set("padding", "4px");
+        icon.getStyle().set("color", "var(--lumo-success-text-color");
+        // Accessible label
+        icon.getElement().setAttribute("aria-label", label);
+        // Tooltip
+        icon.getElement().setAttribute("title", label);
+        icon.getElement().getThemeList().add(style);
+        return icon;
+    }
+
+    private VerticalLayout createLayout(Dialog itemLayout) {
+        var layout = new VerticalLayout();
+        layout.setPadding(false);
+        layout.setMargin(false);
+        Section section = new Section();
+        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
+                "w-full");
+        section.setWidthFull();
+        H1 itemTitle = new H1(title);
+        var horiz = new HorizontalLayout();
+        horiz.setWidthFull();
+        horiz.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        horiz.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        itemTitle.addClassName("flash-item-title");
+        layout.addClassNames("flex", "flex-col", "items-start", "p-m", "rounded-l");
+
+        var closeBtn = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
+        closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        closeBtn.addClickListener(event -> itemLayout.close());
+
+        horiz.add(itemTitle, closeBtn);
+
+        section.add(horiz);
+
+
+        Paragraph itemDetail = new Paragraph(detail);
+        itemDetail.addClassName("flash-item-detail");
+        itemTitle.setWidthFull();
+        itemDetail.addClassNames("text-xl");
+
+        TextArea itemQuestion = new TextArea("Question");
+        itemQuestion.setValue(question);
+        itemQuestion.setWidthFull();
+        itemQuestion.setReadOnly(true);
+
+        var itemAnswerField = new TextArea("Enter Answer");
+        itemAnswerField.setWidthFull();
+        itemAnswerField.setRequired(true);
+
+        layout.setWidthFull();
+
+        itemLayout.setModal(false);
+        itemLayout.setDraggable(false);
+        itemLayout.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
+        itemLayout.setMaxHeight("85%");
+
+        var submit = new Button("Submit");
+        submit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        submit.addClassName("btn-dialog");
+
+        submit.addClickListener(event ->{
+            horlayout.add(confirmed);
+            itemLayout.close();
+        });
+
+        var hl = new HorizontalLayout();
+        hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        hl.setWidthFull();
+        hl.add(submit);
+
+        layout.add(section, itemDetail, itemQuestion, itemAnswerField, hl);
+
+        return layout;
     }
 
     private VerticalLayout createDialogLayout(Dialog formDialog) {
 
         VerticalLayout layout = new VerticalLayout();
+        layout.setPadding(false);
+        layout.setMargin(false);
+
+        Section section = new Section();
+        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
+                "w-full");
+        section.setWidthFull();
 
         HorizontalLayout badges = new HorizontalLayout();
         badges.getStyle().set("flex-wrap", "wrap");
@@ -120,19 +223,21 @@ public class FlashCardListItem extends ListItem {
         layout.addClassName("flash-dialog");
 
         H2 headline = new H2("Edit flashcard");
+        headline.addClassName("flash-item-title");
 
-        headline.addClassName("headline");
+        layout.addClassNames("flex", "flex-col", "items-start", "p-m", "rounded-l");
 
-        Button close = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
 
-        close.addClickListener(event -> formDialog.close());
+        var close = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
 
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        close.addClickListener(event -> formDialog.close());
 
         HorizontalLayout header = new HorizontalLayout(headline, close);
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.setWidthFull();
-        header.addClassNames("border-b", "border-contrast-10", "flex items-center", "justify-center");
+        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        section.add(header);
 
         layout.setWidthFull();
 
@@ -172,13 +277,14 @@ public class FlashCardListItem extends ListItem {
         hl.add(save);
 
 
-        layout.add(header, titleField, descriptionField, urlField, hl);
+        layout.add(section, titleField, descriptionField, urlField, hl);
 
         return layout;
     }
 
     private void editFlashCard(Integer id, String title, String detail, String reference) {
         service.update(id, title, detail, reference);
+        formDialog.close();
         UI.getCurrent().getPage().reload();
     }
 

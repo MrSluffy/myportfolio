@@ -120,9 +120,16 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
     private VerticalLayout createDialogLayout(Dialog formDialog) {
 
         VerticalLayout layout = new VerticalLayout();
+        layout.setPadding(false);
+        layout.setMargin(false);
 
         HorizontalLayout badges = new HorizontalLayout();
         badges.getStyle().set("flex-wrap", "wrap");
+
+        Section section = new Section();
+        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
+                "w-full");
+        section.setWidthFull();
 
         ComboBox<TypePrjkt> comboBox = new ComboBox<>("Category");
         comboBox.setWidthFull();
@@ -148,7 +155,6 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         HorizontalLayout header = new HorizontalLayout(headline, close);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.setWidthFull();
-        header.addClassNames("border-b", "border-contrast-10", "flex items-center", "justify-center");
         header.getElement().getClassList().add("draggable");
 
         layout.setWidthFull();
@@ -214,8 +220,10 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         hl.setWidthFull();
         hl.add(save);
 
+        section.add(header);
 
-        layout.add(header, upload, titleField, comboBox, badges, descriptionField, singleFormatDatePicker, urlField, urlDownload, hl);
+
+        layout.add(section, upload, titleField, comboBox, badges, descriptionField, singleFormatDatePicker, urlField, urlDownload, hl);
 
         return layout;
     }
@@ -236,6 +244,7 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
                 url,
                 urlDownload);
         formDialog.close();
+        imageContainer.removeAll();
         configureProject();
     }
 

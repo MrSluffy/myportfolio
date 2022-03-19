@@ -84,7 +84,7 @@ public class DataGenerator {
                return flashCard;
             });
 
-            flashCardRepository.saveAll(flashCardList);
+//            flashCardRepository.saveAll(flashCardList);
 
             if(projectRepository.findAll().isEmpty()){
                 prjktRepository.saveAll(prjkts);

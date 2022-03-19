@@ -18,7 +18,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import my.portfolio.prjkt.data.entities.FlashCard;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
@@ -39,12 +38,16 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     TextArea descriptionField = new TextArea();
     TextField urlField = new TextField();
 
+    TextField answerField = new TextField("Answer");
+    TextField questionField = new TextField("Question");
+
+
     Button add = new Button("Add");
 
     VerticalLayout layout = new VerticalLayout();
 
 
-    public FlashCardView(FlashCardServiceImp serviceImp){
+    public FlashCardView(FlashCardServiceImp serviceImp) {
         this.serviceImp = serviceImp;
         setWidthFull();
 
@@ -85,27 +88,36 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         formDialog.setDraggable(true);
         formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         formDialog.setMaxHeight("80%");
-        formDialog.setMinWidth("39%");
+        formDialog.setMinWidth("30%");
 
         titleField.setWidthFull();
         titleField.setLabel("Title");
+        titleField.setRequired(true);
+
+        answerField.setWidthFull();
+        answerField.setRequired(true);
+
+        questionField.setWidthFull();
+        questionField.setRequired(true);
 
         descriptionField.setWidthFull();
         descriptionField.setLabel("Details");
-        descriptionField.setMaxLength(200);
+        descriptionField.setRequired(true);
+        descriptionField.setMaxLength(500);
         descriptionField.setValueChangeMode(ValueChangeMode.EAGER);
         descriptionField.addValueChangeListener(e -> e.getSource().setHelperText(e.getValue().length() + "/" + 500));
 
         urlField.setWidthFull();
+        urlField.setRequired(true);
         urlField.setLabel("Source");
-        urlField.setHelperText("https://www.github.com/sourc");
+        urlField.setHelperText("https://www.github.com/source");
 
         add.addClassName("btn-dialog");
 
         add.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         add.addClickListener(buttonClickEvent -> {
-            addNewFlashCard(titleField.getValue(), descriptionField.getValue(), urlField.getValue());
+            addNewFlashCard(titleField.getValue(), descriptionField.getValue(), urlField.getValue(), answerField.getValue(), questionField.getValue());
         });
         var hl = new HorizontalLayout();
         hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
@@ -113,19 +125,21 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         hl.add(add);
 
 
-        layout.add(header, titleField, descriptionField, urlField, hl);
+        layout.add(header, titleField, descriptionField, urlField, questionField, answerField, hl);
 
         return layout;
     }
 
-    private void addNewFlashCard(String title, String detail, String reference) {
-        serviceImp.save(title, detail, reference);
-        configureFlashes();
+    private void addNewFlashCard(String title, String detail, String reference, String answer, String question) {
+        serviceImp.save(title, detail, reference, answer, question);
         formDialog.close();
+        flashList.removeAll();
+        configureFlashes();
     }
 
 
     public void configureFlashes() {
+
         for(FlashCard flashCard : serviceImp.findAllCards()){
             flashList.add(new FlashCardListItem(
                     flashCard.getId(),
@@ -133,6 +147,8 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getCardDetail(),
                     flashCard.getCardReference(),
                     flashCard.getCardDate(),
+                    flashCard.getCarqQuestion(),
+                    flashCard.getCardAnswer(),
                     serviceImp));
         }
 
@@ -145,7 +161,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         btn.addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
         btn.setHeightFull();
         btn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
-        btn.addClickListener(event->
+        btn.addClickListener(event ->
                 formDialog.open());
         flashList.add(btn);
     }

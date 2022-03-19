@@ -179,7 +179,6 @@
 }
 
 .headline {
-    padding-bottom: 4%;
     color: rgba(230, 215, 255, 0.78)
 }
 
@@ -189,6 +188,35 @@
 
 .flash-card{
     grid-column: auto;
+}
+
+.flash-item{
+    color: #37d254;
+}
+
+.sub {
+    align-self: self-start;
+    top: 50px;
+    opacity: 80%;
+    font-size: 12px;
+    position: fixed;
+    color: rgba(230, 215, 255, 0.78)
+}
+
+.flash-item-title {
+    font-size: var(--lumo-font-size-xxl);
+    color: rgba(230, 215, 255, 0.78);
+    justify-content: start;
+}
+
+.flash-item-detail {
+    align-self: self-start;
+    color: rgba(230, 215, 255, 0.78)
+}
+
+.flash-item-question {
+    align-self: self-start;
+    color: rgba(230, 215, 255, 0.78)
 }
 
 

@@ -16,6 +16,10 @@ public class FlashCard extends AbstractEntity {
 
     private String cardDate;
 
+    private String cardAnswer;
+
+    private String carqQuestion;
+
 
 
     public FlashCard(){
@@ -64,5 +68,21 @@ public class FlashCard extends AbstractEntity {
 
     public void setCardDate(String cardDate) {
         this.cardDate = cardDate;
+    }
+
+    public String getCardAnswer() {
+        return cardAnswer;
+    }
+
+    public void setCardAnswer(String cardAnswer) {
+        this.cardAnswer = cardAnswer;
+    }
+
+    public String getCarqQuestion() {
+        return carqQuestion;
+    }
+
+    public void setCarqQuestion(String carqQuestion) {
+        this.carqQuestion = carqQuestion;
     }
 }

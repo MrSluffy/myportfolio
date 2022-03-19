@@ -23,12 +23,15 @@ public class FlashCardServiceImp implements IFlashCardService {
 
 
     @Override
-    public void save(String title, String detail, String reference) {
+    public void save(String title, String detail, String reference, String answer, String question) {
         FlashCard flashCard = new FlashCard();
         flashCard.setCardTitle(title);
         flashCard.setCardDetail(detail);
         flashCard.setCardReference(reference);
         flashCard.setCardDate(LocalDateTime.now().toLocalDate().toString());
+
+        flashCard.setCardAnswer(answer);
+        flashCard.setCarqQuestion(question);
 
         flashCardRepository.save(flashCard);
 
