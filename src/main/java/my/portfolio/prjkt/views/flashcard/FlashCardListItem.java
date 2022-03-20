@@ -143,7 +143,10 @@ public class FlashCardListItem extends ListItem {
 
     private VerticalLayout createLayout(Dialog itemLayout) {
         var layout = new VerticalLayout();
+        layout.setSpacing(false);
         layout.setPadding(false);
+        layout.addClassName("flash-dialog");
+
         layout.setMargin(false);
         Section section = new Section();
         section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
@@ -186,6 +189,7 @@ public class FlashCardListItem extends ListItem {
         itemLayout.setDraggable(false);
         itemLayout.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         itemLayout.setMaxHeight("85%");
+        itemLayout.setMinWidth("36%");
 
         var submit = new Button("Submit");
         submit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -209,8 +213,11 @@ public class FlashCardListItem extends ListItem {
     private VerticalLayout createDialogLayout(Dialog formDialog) {
 
         VerticalLayout layout = new VerticalLayout();
+        layout.setSpacing(false);
         layout.setPadding(false);
         layout.setMargin(false);
+
+        layout.addClassName("flash-dialog");
 
         Section section = new Section();
         section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
@@ -219,8 +226,6 @@ public class FlashCardListItem extends ListItem {
 
         HorizontalLayout badges = new HorizontalLayout();
         badges.getStyle().set("flex-wrap", "wrap");
-
-        layout.addClassName("flash-dialog");
 
         H2 headline = new H2("Edit flashcard");
         headline.addClassName("flash-item-title");
@@ -243,9 +248,9 @@ public class FlashCardListItem extends ListItem {
 
         formDialog.setModal(false);
         formDialog.setDraggable(true);
+        formDialog.setMinWidth("33%");
         formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         formDialog.setMaxHeight("80%");
-        formDialog.setMinWidth("39%");
 
         titleField.setWidthFull();
         titleField.setLabel("Title");

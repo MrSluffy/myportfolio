@@ -9,6 +9,7 @@ import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.html.OrderedList;
+import com.vaadin.flow.component.html.Section;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -49,7 +50,6 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     public FlashCardView(FlashCardServiceImp serviceImp) {
         this.serviceImp = serviceImp;
-        setWidthFull();
 
         constructUI();
 
@@ -69,7 +69,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
         H2 headline = new H2("Add new flashcard");
 
-        headline.addClassName("headline");
+        headline.addClassName("flash-item-title");
 
         Button close = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
 
@@ -79,16 +79,22 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
         HorizontalLayout header = new HorizontalLayout(headline, close);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.setWidthFull();
-        header.addClassNames("border-b", "border-contrast-10", "flex items-center", "justify-center");
-
+        Section section = new Section();
+        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
+                "w-full");
+        section.setWidthFull();
         layout.setWidthFull();
+
+        section.add(header);
+
 
         formDialog.setModal(false);
         formDialog.setDraggable(true);
         formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         formDialog.setMaxHeight("80%");
-        formDialog.setMinWidth("30%");
+        formDialog.setMinWidth("33%");
 
         titleField.setWidthFull();
         titleField.setLabel("Title");
@@ -125,7 +131,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         hl.add(add);
 
 
-        layout.add(header, titleField, descriptionField, urlField, questionField, answerField, hl);
+        layout.add(section, titleField, descriptionField, urlField, questionField, answerField, hl);
 
         return layout;
     }

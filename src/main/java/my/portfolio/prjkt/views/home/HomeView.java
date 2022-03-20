@@ -1,6 +1,8 @@
 package my.portfolio.prjkt.views.home;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -15,7 +17,7 @@ import java.util.Random;
 @PageTitle("Home")
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-public class HomeView extends VerticalLayout {
+public class HomeView extends VerticalLayout implements HasComponents, HasStyle {
 
     HorizontalLayout layout = new HorizontalLayout();
 
@@ -24,15 +26,11 @@ public class HomeView extends VerticalLayout {
     public HomeView() {
 
         addClassName("home-view");
-        addClassNames("flex", "items-start", "p-l", "rounded-l");
+        addClassNames("image-list-view", "items-center","max-w-screen-lg", "mx-auto", "pb-l", "px-l");
 
-        setSpacing(false);
+        setWidthFull();
 
         add(configureContent());
-
-        setSizeFull();
-        setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
     }
 
     private Component configureContent() {
@@ -48,8 +46,12 @@ public class HomeView extends VerticalLayout {
         qoute.addClassName("text-qoute");
         layout.addClassNames("flex", "items-start", "p-l", "rounded-l");
         layout.addClassName("content-layout");
-
-        layout.add(head, text, qoute, imgBusiness, imgShape);
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        layout.setSizeFull();
+        Image gif = new Image("images/business-team.gif", "gif");
+        gif.addClassName("gif-view");
+        var vr = new VerticalLayout(head, text, qoute);
+        layout.add(vr, gif);
         return layout;
     }
 
