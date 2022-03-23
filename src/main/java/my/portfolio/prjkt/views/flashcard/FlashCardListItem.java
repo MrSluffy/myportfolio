@@ -227,18 +227,12 @@ public class FlashCardListItem extends ListItem {
         HorizontalLayout badges = new HorizontalLayout();
         badges.getStyle().set("flex-wrap", "wrap");
 
-        H2 headline = new H2("Edit flashcard");
+        H3 headline = new H3("Edit flashcard");
         headline.addClassName("flash-item-title");
 
         layout.addClassNames("flex", "flex-col", "items-start", "p-m", "rounded-l");
 
-
-        var close = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
-
-        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        close.addClickListener(event -> formDialog.close());
-
-        HorizontalLayout header = new HorizontalLayout(headline, close);
+        HorizontalLayout header = new HorizontalLayout(headline);
         header.setWidthFull();
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
@@ -275,11 +269,16 @@ public class FlashCardListItem extends ListItem {
         save.addClickListener(buttonClickEvent -> {
             editFlashCard(id, titleField.getValue(), descriptionField.getValue(), urlField.getValue());
         });
+
+        var close = new Button("Cancel");
+
+        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        close.addClickListener(event -> formDialog.close());
         var hl = new HorizontalLayout();
         hl.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
         hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         hl.setWidthFull();
-        hl.add(save);
+        hl.add(close, save);
 
 
         layout.add(section, titleField, descriptionField, urlField, hl);

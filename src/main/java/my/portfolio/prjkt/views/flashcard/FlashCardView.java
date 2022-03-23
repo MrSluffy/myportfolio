@@ -6,23 +6,20 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Main;
-import com.vaadin.flow.component.html.OrderedList;
-import com.vaadin.flow.component.html.Section;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 import my.portfolio.prjkt.data.entities.FlashCard;
-import my.portfolio.prjkt.data.entities.MyUser;
+import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.views.MainLayout;
@@ -35,7 +32,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     private OrderedList flashList;
     private final FlashCardServiceImp serviceImp;
     private MyUserServiceImp myUserServiceImp;
-
+    private DeviceServiceImp device;
 
     Dialog formDialog = new Dialog();
 
@@ -49,60 +46,67 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     Button add = new Button("Add");
 
-    VerticalLayout layout = new VerticalLayout();
 
-    MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
-
-
-    public FlashCardView(FlashCardServiceImp serviceImp, MyUserServiceImp myUserServiceImp) {
+    public FlashCardView(FlashCardServiceImp serviceImp, MyUserServiceImp myUserServiceImp, DeviceServiceImp device) {
         this.serviceImp = serviceImp;
         this.myUserServiceImp = myUserServiceImp;
+        this.device = device;
 
         constructUI();
 
         configureFlashes();
 
-        VerticalLayout dialogLayout = createDialogLayout(formDialog);
-        dialogLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
-        formDialog.add(dialogLayout);
+        configureDialog();
 
+    }
+
+    private void configureDialog() {
+        VerticalLayout dialogLayout = createDialogLayout(formDialog);
+        formDialog.add(dialogLayout);
+        formDialog.setMinWidth(device.isMobile() ? "80%" : "33%");
+        formDialog.setModal(false);
+        formDialog.setDraggable(true);
+        formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
+        formDialog.getElement().setAttribute("aria-label", "Create new flashcard");
 
     }
 
 
     private VerticalLayout createDialogLayout(Dialog formDialog) {
+        H3 dialogTitle = new H3("Create new flashcard");
+        dialogTitle.addClassName("dialog-title");
 
-        layout.addClassName("flash-dialog");
-
-        H2 headline = new H2("Add new flashcard");
-
-        headline.addClassName("flash-item-title");
-
-        Button close = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
-
-        close.addClickListener(event -> formDialog.close());
-
-        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        HorizontalLayout header = new HorizontalLayout(headline, close);
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        Header header = new Header(dialogTitle);
         header.setWidthFull();
-        Section section = new Section();
-        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
-                "w-full");
-        section.setWidthFull();
-        layout.setWidthFull();
+        header.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "items-center", "w-full");
 
-        section.add(header);
+        VerticalLayout createFields = createFlashField();
+
+        VerticalLayout scrollContent = new VerticalLayout(createFields);
+
+        Scroller scroller = new Scroller(scrollContent);
+
+        Footer footer = createFooter(formDialog);
+        VerticalLayout dialogContent = new VerticalLayout();
+
+        header.setHeight("90px");
+        dialogContent.addClassName("db-dialog");
+        footer.setHeight("70px");
+        footer.setWidthFull();
+        scroller.setHeight("400px");
+        footer.addClassNames("bg-contrast-5", "flex", "items-center", "w-full");
+        dialogContent.add(header, scroller, footer);
+        dialogContent.setSpacing(false);
+        dialogContent.setPadding(false);
+        dialogContent.getStyle().remove("width");
+        dialogContent.setAlignItems(FlexComponent.Alignment.STRETCH);
+        dialogContent.setClassName("dialog-no-padding-example-overlay");
 
 
-        formDialog.setModal(false);
-        formDialog.setDraggable(true);
-        formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
-        formDialog.setMaxHeight("80%");
-        formDialog.setMinWidth("33%");
+        return dialogContent;
+    }
 
+    private VerticalLayout createFlashField() {
         titleField.setWidthFull();
         titleField.setLabel("Title");
         titleField.setRequired(true);
@@ -125,6 +129,18 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         urlField.setLabel("Source");
         urlField.setHelperText("https://www.github.com/source");
 
+        VerticalLayout section = new VerticalLayout(titleField,
+                descriptionField, urlField, questionField, answerField);
+        section.setPadding(false);
+        section.setSpacing(false);
+        section.setAlignItems(FlexComponent.Alignment.STRETCH);
+        section.getElement().setAttribute("role", "region");
+        return section;
+    }
+
+
+    private Footer createFooter(Dialog dialog) {
+
         add.addClassName("btn-dialog");
 
         add.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -132,16 +148,18 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         add.addClickListener(buttonClickEvent -> {
             addNewFlashCard(titleField.getValue(), descriptionField.getValue(), urlField.getValue(), answerField.getValue(), questionField.getValue());
         });
-        var hl = new HorizontalLayout();
-        hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        hl.setWidthFull();
-        hl.add(add);
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton,
+                add);
+        buttonLayout.setWidthFull();
+        buttonLayout
+                .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        buttonLayout.addClassName("footer");
 
-
-        layout.add(section, titleField, descriptionField, urlField, questionField, answerField, hl);
-
-        return layout;
+        return new Footer(buttonLayout);
     }
+
 
     private void addNewFlashCard(String title, String detail, String reference, String answer, String question) {
         serviceImp.save(title, detail, reference, answer, question);

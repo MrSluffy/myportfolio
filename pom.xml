@@ -45,6 +45,15 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -149,6 +158,11 @@
             <version>1.1.0</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.mobile</groupId>
+            <artifactId>spring-mobile-device</artifactId>
+            <version>2.0.0.M3</version>
+        </dependency>
+        <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>javax.persistence-api</artifactId>
             <version>2.2</version>
@@ -157,16 +171,10 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
         </dependency>
-
         <dependency>
             <groupId>de.mekaso.vaadin.addons</groupId>
             <artifactId>compani</artifactId>
             <version>1.1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.flowingcode.addons</groupId>
-            <artifactId>font-awesome-iron-iconset</artifactId>
-            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
