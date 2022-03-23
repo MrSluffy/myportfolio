@@ -3,7 +3,10 @@ package my.portfolio.prjkt.views.home;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,6 +24,12 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
 
     HorizontalLayout layout = new HorizontalLayout();
 
+    Image imgShape = new Image("images/image-shape.png", "business-shape-bg");
+    Image imgBusiness = new Image("images/image-business.png", "business");
+    Image gif = new Image("images/business-team.gif", "gif");
+
+
+
     private final String[] mRandomGreetings = new String[]{"simple.", "unique.", "Andrew"};
 
     public HomeView() {
@@ -34,9 +43,8 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
     }
 
     private Component configureContent() {
-        Image imgShape = new Image("images/image-shape.png", "business-shape-bg");
+
         imgShape.addClassName("image-shape");
-        Image imgBusiness = new Image("images/image-business.png", "business");
         Label head = new Label("Hi, I'm " + getRandomGreetings());
         head.addClassName("h1-head");
         imgBusiness.addClassName("image-business");
@@ -48,7 +56,6 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
         layout.addClassName("content-layout");
         layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         layout.setSizeFull();
-        Image gif = new Image("images/business-team.gif", "gif");
         gif.addClassName("gif-view");
         var vr = new VerticalLayout(head, text, qoute);
         layout.add(vr, gif);
