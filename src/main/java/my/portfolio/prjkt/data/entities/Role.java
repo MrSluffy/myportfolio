@@ -2,7 +2,7 @@ package my.portfolio.prjkt.data.entities;
 
 public enum Role {
 
-    USER("user"),GUEST("guest");
+    USER("user"), ADMIN("admin"), GUEST("guest");
 
     private final String roleName;
 

@@ -10,7 +10,6 @@ public class TabExt extends Tabs{
 
     public TabExt(Component[] component) {
         setHeight("4em");
-        addClassName("tab-main");
         addClassNames("bg-base", "border-b", "border-contrast-10","box-border","flex", "h-xl", "items-end");
         setId("tabs");
         add(component);

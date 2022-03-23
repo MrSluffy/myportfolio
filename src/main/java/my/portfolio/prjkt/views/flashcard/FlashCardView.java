@@ -20,8 +20,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import my.portfolio.prjkt.data.entities.FlashCard;
+import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
+import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.views.MainLayout;
 
 
@@ -31,6 +34,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     private OrderedList flashList;
     private final FlashCardServiceImp serviceImp;
+    private MyUserServiceImp myUserServiceImp;
 
 
     Dialog formDialog = new Dialog();
@@ -47,9 +51,12 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     VerticalLayout layout = new VerticalLayout();
 
+    MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
 
-    public FlashCardView(FlashCardServiceImp serviceImp) {
+
+    public FlashCardView(FlashCardServiceImp serviceImp, MyUserServiceImp myUserServiceImp) {
         this.serviceImp = serviceImp;
+        this.myUserServiceImp = myUserServiceImp;
 
         constructUI();
 
@@ -167,8 +174,9 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         btn.addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
         btn.setHeightFull();
         btn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
-        btn.addClickListener(event ->
-                formDialog.open());
+        btn.addClickListener(event -> {
+            formDialog.open();
+        });
         flashList.add(btn);
     }
 

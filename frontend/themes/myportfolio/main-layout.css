@@ -68,7 +68,7 @@
         line-height: 36px;
         transition: transform .2s;
 
-        /*color: #C8C8C8;*/
+        color: #C8C8C8;
     }
 }
 
@@ -130,7 +130,7 @@
     font-size: calc(46px + 6 * ((100vw - 320px) / 120));
     line-height: calc(42px + 6 * ((100vw - 320px) / 120));
 
-    /*color: #FFFFFF;*/
+    color: #FFFFFF;
 }
 
 .text-qoute{
@@ -147,17 +147,17 @@
     line-height: 36px;
     transition: transform .2s;
 
-    /*color: #C8C8C8;*/
+    color: #C8C8C8;
 }
 
 
 .content-layout .text-qoute{
     color: transparent;
-    text-shadow: 0 0 10px rgba(31, 31, 31, 0.83);
+    text-shadow: 0 0 10px rgba(252, 252, 252, 0.83);
 }
 
 .text-qoute:hover{
-    color: #151515;
+    color: #fcf9f9;
     transform: scale(1.01);
     text-shadow: none;
 
@@ -168,7 +168,7 @@
     width: 485px;
     height: 159px;
     left: 83px;
-    top: calc(220px + 5 * ((100vw - 320px) / 120));
+    top: calc(240px + 5 * ((100vw - 320px) / 120));
 
     font-family: 'Poppins', sans-serif;
     font-style: normal;
@@ -176,12 +176,12 @@
     font-size: calc(4px + 3 * ((100vw - 120px) / 120));
     line-height: 42px;
 
-    /*color: #FFFFFF*/
+    color: #FFFFFF
 }
 
 .header-h2 {
     padding-bottom: 3%;
-    /*color: rgb(230, 215, 255)*/
+    color: rgb(230, 215, 255)
 }
 
 .btn-icon {
@@ -189,7 +189,7 @@
     width: 83px;
     padding: 10px;
     opacity: 80%;
-    /*color: rgba(230, 215, 255, 0.63)*/
+    color: rgba(230, 215, 255, 0.63)
 }
 
 .db-dialog {
@@ -198,15 +198,15 @@
 }
 
 .btn-dialog {
-    /*color: rgba(230, 215, 255, 0.78)*/
+    color: rgba(230, 215, 255, 0.78)
 }
 
 .headline {
-    /*color: rgba(230, 215, 255, 0.78)*/
+    color: rgba(230, 215, 255, 0.78)
 }
 
 .flash-more-btn {
-    /*color: rgba(230, 215, 255, 0.78);*/
+    color: rgba(230, 215, 255, 0.78);
 }
 
 .flash-card{
@@ -223,23 +223,23 @@
     opacity: 80%;
     font-size: 12px;
     position: fixed;
-    /*color: rgba(230, 215, 255, 0.78)*/
+    color: rgba(230, 215, 255, 0.78)
 }
 
 .flash-item-title {
     font-size: var(--lumo-font-size-xxl);
-    /*color: rgba(230, 215, 255, 0.78);*/
+    color: rgba(230, 215, 255, 0.78);
     justify-content: start;
 }
 
 .flash-item-detail {
     align-self: self-start;
-    /*color: rgba(230, 215, 255, 0.78)*/
+    color: rgba(230, 215, 255, 0.78)
 }
 
 .flash-item-question {
     align-self: self-start;
-    /*color: rgba(230, 215, 255, 0.78)*/
+    color: rgba(230, 215, 255, 0.78)
 }
 
 
