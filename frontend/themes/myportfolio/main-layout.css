@@ -9,20 +9,24 @@
     .home-view .content-layout {
         transition: all 200ms cubic-bezier(0.4, 0.2, 0.2, 1);
         max-width: 320px;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
     }
 
 
     .home-view .gif-view{
         justify-items: center;
-        height: 300px;
-        width: 300px;
-        margin-left: -40px;
+        height: 280px;
+        width: 280px;
+        margin-top: -20px;
+        margin-left: -46px;
     }
 
     .home-view .image-business {
         width: 338px;
         height: 233px;
-        left: 60px;
+        left: 0px;
         top: 140px;
     }
 
@@ -40,34 +44,34 @@
     .home-view .h1-head {
         line-height: 70px;
         position: center;
-        left: 30px;
+        left: 0px;
         font-size: 56px;
         top: 327.75px;
+        margin-left: 20px;
     }
 
     .home-view .text-content {
         font-weight: 500;
         font-size: 18px;
-        left: 30px;
+        left: 0px;
         top: 447.75px;
-
+        margin-left: 20px;
     }
 
 
     .home-view .text-qoute{
         position: absolute;
-        width: 391px;
+        width: auto;
         height: 126px;
-        left: 30px;
+        left: 0px;
         top: 590px;
-
         font-family: 'Poppins', sans-serif;
         font-style: italic;
         font-weight: 400;
         font-size: 16px;
         line-height: 36px;
         transition: transform .2s;
-
+        margin-left: 20px;
         color: #C8C8C8;
     }
 }
@@ -77,12 +81,9 @@
     padding-top: 10px;
 }
 
-.home-view{
-}
-
 .gif-view{
-    height: 580px;
-    width: 580px;
+    height: 550px;
+    width: 550px;
     margin-left: calc(460px + 6 * ((100vw - 320px) / 120));
 }
 
