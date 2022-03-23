@@ -6,6 +6,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
@@ -71,6 +72,9 @@ public class MainLayout extends AppLayout implements Broadcaster.BroadcastListen
     private void configureDialog() {
         VerticalLayout formDialogLayout = configureLoginFormDialogLayout();
         formDialog.add(formDialogLayout);
+        formDialog.setModal(false);
+        formDialog.setDraggable(true);
+        formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
     }
 
     private VerticalLayout configureLoginFormDialogLayout() {
@@ -146,6 +150,8 @@ public class MainLayout extends AppLayout implements Broadcaster.BroadcastListen
         head.addClassName("headline");
         dialog.setDraggable(true);
         dialog.setResizable(true);
+        dialog.setModal(false);
+        dialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         com.vaadin.flow.component.html.Section section = new com.vaadin.flow.component.html.Section();
         section.addClassNames("bg-base", "border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
                 "w-full");

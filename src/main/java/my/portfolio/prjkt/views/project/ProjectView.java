@@ -15,6 +15,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -55,6 +56,14 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
     TextArea descriptionField = new TextArea();
     TextField urlField = new TextField();
 
+    ComboBox<TypePrjkt> comboBox = new ComboBox<>("Category");
+    DatePicker.DatePickerI18n datePicker = new DatePicker.DatePickerI18n();
+
+    DatePicker singleFormatDatePicker = new DatePicker("Project issued:");
+
+
+
+
     private byte[] imageBytes;
 
     Button btn;
@@ -72,11 +81,21 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         initImageContainer();
 
         configureProject();
+        
+        configureDialog();
+        
+    }
 
+    private void configureDialog() {
         VerticalLayout dialogLayout = createDialogLayout(formDialog);
-        dialogLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
         formDialog.add(dialogLayout);
+        formDialog.setMaxHeight("80%");
+        formDialog.setMinWidth("33%");
+        formDialog.setModal(false);
+        formDialog.setDraggable(true);
+        formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
 
+        formDialog.getElement().setAttribute("aria-label", "Add new project");
     }
 
     private void initImageContainer() {
@@ -119,19 +138,79 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
 
     private VerticalLayout createDialogLayout(Dialog formDialog) {
 
-        VerticalLayout layout = new VerticalLayout();
-        layout.setPadding(false);
-        layout.setMargin(false);
+
+        var dialogTitle = new H3("Add new project");
+
+        Header header = new Header(dialogTitle);
+        dialogTitle.addClassName("dialog-title");
+
+        header.setWidthFull();
+        header.addClassNames("border-b", "no-me", "border-contrast-10", "box-border", "flex", "items-center", "w-full");
+
+
+        VerticalLayout createFields = createFlashField();
+
+        VerticalLayout scrollContent = new VerticalLayout(createFields);
+
+        Scroller scroller = new Scroller(scrollContent);
+
+        Footer footer = createFooter(formDialog);
+
+        header.setHeight("70px");
+        scroller.setHeight("400px");
+        footer.setHeight("70px");
+        footer.setWidthFull();
+        footer.addClassNames("bg-contrast-5", "flex", "items-center", "w-full");
+
+        VerticalLayout dialogContent = new VerticalLayout();
+
+        dialogContent.addClassName("db-dialog");
+        dialogContent.add(header, scroller, footer);
+        dialogContent.setPadding(false);
+        dialogContent.setSpacing(false);
+        dialogContent.getStyle().remove("width");
+        dialogContent.setAlignItems(FlexComponent.Alignment.STRETCH);
+        dialogContent.setClassName("dialog-no-padding-example-overlay");
+
+        return dialogContent;
+    }
+
+    private Footer createFooter(Dialog dialog) {
+
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        save.addClassName("btn-dialog");
+
+        save.addClickListener(buttonClickEvent -> {
+            try {
+                addNewPrjkt(
+                        imageBytes,
+                        titleField.getValue(),
+                        comboBox.getValue(),
+                        singleFormatDatePicker.getValue(),
+                        descriptionField.getValue(),
+                        urlField.getValue(), urlDownload.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton,
+                save);
+        buttonLayout
+                .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        buttonLayout.setWidthFull();
+        buttonLayout.addClassName("footer");
+
+        return new Footer(buttonLayout);
+    }
+
+    private VerticalLayout createFlashField() {
 
         HorizontalLayout badges = new HorizontalLayout();
         badges.getStyle().set("flex-wrap", "wrap");
 
-        Section section = new Section();
-        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
-                "w-full");
-        section.setWidthFull();
-
-        ComboBox<TypePrjkt> comboBox = new ComboBox<>("Category");
         comboBox.setWidthFull();
         comboBox.setItems(serviceImp.getAllProjectType());
         comboBox.setItemLabelGenerator(TypePrjkt::getName);
@@ -140,31 +219,8 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
             badges.add(filterBadge);
         });
 
-        layout.addClassName("db-dialog");
-
-        var headline = new H3("Add new project");
-
-        headline.addClassName("headline");
-
-        Button close = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
-
-        close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        close.addClickListener(event -> formDialog.close());
-
-        HorizontalLayout header = new HorizontalLayout(headline, close);
-        header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        header.setWidthFull();
-        header.getElement().getClassList().add("draggable");
-
-        layout.setWidthFull();
-
-        DatePicker.DatePickerI18n datePicker = new DatePicker.DatePickerI18n();
-
-
         datePicker.setDateFormat("yyyy-MM-dd");
 
-        DatePicker singleFormatDatePicker = new DatePicker("Select a date:");
         singleFormatDatePicker.setPlaceholder(LocalDateTime.now().toLocalDate().toString());
         singleFormatDatePicker.setI18n(datePicker);
         singleFormatDatePicker.setWidthFull();
@@ -173,12 +229,6 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
             singleFormatDatePicker.setValue(LocalDate.now());
         }
 
-
-        formDialog.setModal(false);
-        formDialog.setDraggable(true);
-        formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
-        formDialog.setMaxHeight("80%");
-        formDialog.setMinWidth("33%");
 
         titleField.setWidthFull();
         titleField.setLabel("Name");
@@ -197,35 +247,13 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         urlDownload.setLabel("Download URL");
         urlDownload.setHelperText("https://play.google.com/store/apps/details?id=... etc");
 
+        VerticalLayout section = new VerticalLayout(upload, titleField, comboBox, badges, descriptionField, singleFormatDatePicker, urlField, urlDownload);
+        section.setPadding(false);
+        section.setSpacing(false);
+        section.setAlignItems(FlexComponent.Alignment.STRETCH);
+        section.getElement().setAttribute("role", "region");
+        return section;
 
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        save.addClassName("btn-dialog");
-
-        save.addClickListener(buttonClickEvent -> {
-            try {
-                addNewPrjkt(
-                        imageBytes,
-                        titleField.getValue(),
-                        comboBox.getValue(),
-                        singleFormatDatePicker.getValue(),
-                        descriptionField.getValue(),
-                        urlField.getValue(), urlDownload.getValue());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        var hl = new HorizontalLayout();
-        hl.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        hl.setWidthFull();
-        hl.add(save);
-
-        section.add(header);
-
-
-        layout.add(section, upload, titleField, comboBox, badges, descriptionField, singleFormatDatePicker, urlField, urlDownload, hl);
-
-        return layout;
     }
 
     private void addNewPrjkt(byte[] imageBytes,

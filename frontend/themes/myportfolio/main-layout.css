@@ -198,15 +198,15 @@
 }
 
 .btn-dialog {
-    color: rgba(230, 215, 255, 0.78)
+    color: rgba(247, 243, 253, 0.96)
 }
 
 .headline {
-    color: rgba(230, 215, 255, 0.78)
+    color: rgba(247, 243, 253, 0.96)
 }
 
 .flash-more-btn {
-    color: rgba(230, 215, 255, 0.78);
+    color: rgba(247, 243, 253, 0.96)
 }
 
 .flash-card{
@@ -223,25 +223,33 @@
     opacity: 80%;
     font-size: 12px;
     position: fixed;
-    color: rgba(230, 215, 255, 0.78)
+    color: rgba(247, 243, 253, 0.96)
 }
 
 .flash-item-title {
     font-size: var(--lumo-font-size-xxl);
-    color: rgba(230, 215, 255, 0.78);
+    color: rgba(247, 243, 253, 0.96);
     justify-content: start;
 }
 
 .flash-item-detail {
     align-self: self-start;
-    color: rgba(230, 215, 255, 0.78)
+    color: rgba(247, 243, 253, 0.96)
 }
 
 .flash-item-question {
     align-self: self-start;
-    color: rgba(230, 215, 255, 0.78)
+    color: rgba(247, 243, 253, 0.96)
 }
 
+.dialog-title{
+    padding-left: 20px;
+    color: #FFFFFF
+}
+
+.footer{
+    padding-right: 20px;
+}
 
 
 
