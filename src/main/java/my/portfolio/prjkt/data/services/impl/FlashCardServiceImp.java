@@ -1,8 +1,11 @@
 package my.portfolio.prjkt.data.services.impl;
 
+import com.vaadin.flow.server.VaadinSession;
 import my.portfolio.prjkt.data.entities.FlashCard;
+import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.repository.IFlashCardRepository;
 import my.portfolio.prjkt.data.services.IFlashCardService;
+import my.portfolio.prjkt.exceptions.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,28 +26,40 @@ public class FlashCardServiceImp implements IFlashCardService {
 
 
     @Override
-    public void save(String title, String detail, String reference, String answer, String question) {
-        FlashCard flashCard = new FlashCard();
-        flashCard.setCardTitle(title);
-        flashCard.setCardDetail(detail);
-        flashCard.setCardReference(reference);
-        flashCard.setCardDate(LocalDateTime.now().toLocalDate().toString());
+    public void save(String title, String detail, String reference, String answer, String question) throws AuthException {
+        MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
 
-        flashCard.setCardAnswer(answer);
-        flashCard.setCarqQuestion(question);
-
-        flashCardRepository.save(flashCard);
-
+        if (user != null) {
+            FlashCard flashCard = new FlashCard();
+            flashCard.setCardTitle(title);
+            flashCard.setCardDetail(detail);
+            flashCard.setCardReference(reference);
+            flashCard.setCardDate(LocalDateTime.now().toLocalDate().toString());
+            flashCard.getAddedByMyUser().add(user);
+            flashCard.setMyUserInFlashCard(user);
+            flashCard.setCardAnswer(answer);
+            flashCard.setCarqQuestion(question);
+            flashCardRepository.save(flashCard);
+        } else {
+            throw new AuthException();
+        }
     }
 
     @Transactional
     @Override
-    public void update(Integer id, String title, String detail, String reference) {
-        FlashCard flashCard = getById(id);
-        flashCard.setCardTitle(title);
-        flashCard.setCardDetail(detail);
-        flashCard.setCardReference(reference);
-        flashCardRepository.save(flashCard);
+    public void update(Integer id, String title, String detail, String reference, String question, String answer) throws AuthException {
+        MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
+        if(user != null){
+            FlashCard flashCard = getById(id);
+            flashCard.setCardTitle(title);
+            flashCard.setCardDetail(detail);
+            flashCard.setCardReference(reference);
+            flashCard.setCardAnswer(answer);
+            flashCard.setCarqQuestion(question);
+            flashCard.setMyUserInFlashCard(user);
+            flashCardRepository.save(flashCard);
+        }
+
     }
 
     @Override

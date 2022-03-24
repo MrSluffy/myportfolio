@@ -1,10 +1,11 @@
 package my.portfolio.prjkt.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import my.portfolio.prjkt.data.entities.abstracts.AbstractEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -13,6 +14,12 @@ public class MyUser extends AbstractEntity implements Serializable {
     private String userName;
     private String passwordSalt;
     private String passwordHash;
+
+    @JsonIgnore
+    @ManyToOne(cascade={CascadeType.MERGE,
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "flashcard_id", referencedColumnName = "id")
+    private FlashCard flashcard;
 
     private Role role;
 
@@ -71,6 +78,14 @@ public class MyUser extends AbstractEntity implements Serializable {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public FlashCard getFlashcard() {
+        return flashcard;
+    }
+
+    public void setFlashcard(FlashCard flashcard) {
+        this.flashcard = flashcard;
     }
 }
 

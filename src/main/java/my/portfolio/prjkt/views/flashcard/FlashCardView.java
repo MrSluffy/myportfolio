@@ -9,6 +9,8 @@ import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -22,6 +24,7 @@ import my.portfolio.prjkt.data.entities.FlashCard;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
+import my.portfolio.prjkt.exceptions.AuthException;
 import my.portfolio.prjkt.views.MainLayout;
 
 
@@ -162,10 +165,16 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
 
     private void addNewFlashCard(String title, String detail, String reference, String answer, String question) {
-        serviceImp.save(title, detail, reference, answer, question);
-        formDialog.close();
-        flashList.removeAll();
-        configureFlashes();
+        try {
+            serviceImp.save(title, detail, reference, answer, question);
+            formDialog.close();
+            flashList.removeAll();
+            configureFlashes();
+        } catch (AuthException e) {
+            Notification.show("You need to sign in as Guest or Create a new account",
+                    5000,
+                    Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
     }
 
 
@@ -180,6 +189,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getCardDate(),
                     flashCard.getCarqQuestion(),
                     flashCard.getCardAnswer(),
+                    flashCard.getMyUserInFlashCard().getUserName(),
                     serviceImp));
         }
 

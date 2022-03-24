@@ -1,8 +1,11 @@
 package my.portfolio.prjkt.data.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import my.portfolio.prjkt.data.entities.abstracts.AbstractEntity;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class FlashCard extends AbstractEntity {
@@ -20,10 +23,16 @@ public class FlashCard extends AbstractEntity {
 
     private String carqQuestion;
 
+    @OneToMany(mappedBy = "flashcard", orphanRemoval = true)
+    private Set<MyUser> addedByMyUser = new HashSet<>();
 
+    @JsonIgnore
+    @ManyToOne(cascade={CascadeType.MERGE,
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "flashcard_id", referencedColumnName = "id")
+    private MyUser myUserInFlashCard;
 
     public FlashCard(){
-
     }
 
 
@@ -84,5 +93,21 @@ public class FlashCard extends AbstractEntity {
 
     public void setCarqQuestion(String carqQuestion) {
         this.carqQuestion = carqQuestion;
+    }
+
+    public Set<MyUser> getAddedByMyUser() {
+        return addedByMyUser;
+    }
+
+    public void setAddedByMyUser(Set<MyUser> addedByMyUser) {
+        this.addedByMyUser = addedByMyUser;
+    }
+
+    public MyUser getMyUserInFlashCard() {
+        return myUserInFlashCard;
+    }
+
+    public void setMyUserInFlashCard(MyUser myUserInFlashCard) {
+        this.myUserInFlashCard = myUserInFlashCard;
     }
 }

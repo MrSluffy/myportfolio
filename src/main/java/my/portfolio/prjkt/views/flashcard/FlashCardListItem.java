@@ -14,6 +14,8 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,6 +23,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
+import my.portfolio.prjkt.exceptions.AuthException;
 
 public class FlashCardListItem extends ListItem {
 
@@ -32,6 +35,9 @@ public class FlashCardListItem extends ListItem {
     TextArea descriptionField = new TextArea();
     TextField urlField = new TextField();
 
+    TextField answerField = new TextField("Answer");
+    TextField questionField = new TextField("Question");
+
     Button save = new Button("Save");
     private final Integer id;
     private final String title;
@@ -39,18 +45,28 @@ public class FlashCardListItem extends ListItem {
     private final String reference;
     private final String question;
     private final String answer;
+    private String username;
     private final FlashCardServiceImp service;
     HorizontalLayout horlayout = new HorizontalLayout();
 
     Icon confirmed;
 
-    public FlashCardListItem(Integer id, String title, String detail, String reference, String date, String question, String answer, FlashCardServiceImp service) {
+    public FlashCardListItem(Integer id,
+                             String title,
+                             String detail,
+                             String reference,
+                             String date,
+                             String question,
+                             String answer,
+                             String username,
+                             FlashCardServiceImp service) {
         this.id = id;
         this.title = title;
         this.detail = detail;
         this.reference = reference;
         this.question = question;
         this.answer = answer;
+        this.username = username;
         this.service = service;
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
         addClassName("material-list");
@@ -119,10 +135,16 @@ public class FlashCardListItem extends ListItem {
         });
 
         var bottomLayout = new HorizontalLayout();
-        bottomLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        bottomLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         bottomLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
         bottomLayout.setWidthFull();
-        bottomLayout.add(menuBar);
+        Span user = new Span();
+
+        user.addClassNames("text-m", "text-secondary");
+        user.setText("Author : " + username);
+
+
+        bottomLayout.add(user, menuBar);
 
 
         add(horlayout, subtitle, anchorLayour, paragraph, bottomLayout);
@@ -262,12 +284,23 @@ public class FlashCardListItem extends ListItem {
         urlField.setValue(reference);
         urlField.setHelperText("https://www.github.com/source.. etc");
 
+        questionField.setWidthFull();
+        questionField.setValue(question);
+
+        answerField.setWidthFull();
+        answerField.setValue(answer);
+
 
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClassName("btn-dialog");
 
         save.addClickListener(buttonClickEvent -> {
-            editFlashCard(id, titleField.getValue(), descriptionField.getValue(), urlField.getValue());
+            editFlashCard(id,
+                    titleField.getValue(),
+                    descriptionField.getValue(),
+                    urlField.getValue(),
+                    questionField.getValue(),
+                    answerField.getValue());
         });
 
         var close = new Button("Cancel");
@@ -281,15 +314,22 @@ public class FlashCardListItem extends ListItem {
         hl.add(close, save);
 
 
-        layout.add(section, titleField, descriptionField, urlField, hl);
+        layout.add(section, titleField, descriptionField, urlField, questionField, answerField, hl);
 
         return layout;
     }
 
-    private void editFlashCard(Integer id, String title, String detail, String reference) {
-        service.update(id, title, detail, reference);
-        formDialog.close();
-        UI.getCurrent().getPage().reload();
+    private void editFlashCard(Integer id, String title, String detail, String reference, String question, String answer) {
+        try {
+            service.update(id, title, detail, reference, question, answer);
+            formDialog.close();
+            UI.getCurrent().getPage().reload();
+        } catch (AuthException e) {
+            Notification.show("You need to sign in as Guest or Create a new account",
+                    5000,
+                    Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+
     }
 
     private MenuItem createIconItem(MenuBar menu, VaadinIcon iconName, String ariaLabel) {
