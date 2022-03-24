@@ -59,7 +59,7 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
         gif.addClassName("gif-view");
         Div div = new Div();
         div.setSizeFull();
-        div.getElement().setProperty("innerHTML", "<lottie-player class=\"gif-view\" src=\"https://assets10.lottiefiles.com/packages/lf20_sk5h1kfn.json\"  background=\"transparent\"  speed=\"1\" loop  autoplay></lottie-player>");
+        div.getElement().setProperty("innerHTML", "<lottie-player class=\"gif-view\" src=\"https://assets1.lottiefiles.com/packages/lf20_0d8dwu0k.json\"  background=\"transparent\"  speed=\"1\" loop  autoplay></lottie-player>");
         var vr = new VerticalLayout(head, text, qoute);
         layout.add(vr, div);
         return layout;

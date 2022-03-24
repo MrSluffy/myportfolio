@@ -72,7 +72,7 @@
         line-height: 36px;
         transition: transform .2s;
         margin-left: 20px;
-        color: #C8C8C8;
+        /*color: #C8C8C8;*/
     }
 
     .not-found-layout .not-found-img{
@@ -143,7 +143,7 @@
     font-size: calc(46px + 6 * ((100vw - 320px) / 120));
     line-height: calc(42px + 6 * ((100vw - 320px) / 120));
 
-    color: #FFFFFF;
+    /*color: #FFFFFF;*/
 }
 
 .text-qoute{
@@ -160,17 +160,17 @@
     line-height: 36px;
     transition: transform .2s;
 
-    color: #C8C8C8;
+    /*color: #C8C8C8;*/
 }
 
 
 .content-layout .text-qoute{
     color: transparent;
-    text-shadow: 0 0 10px rgba(252, 252, 252, 0.83);
+    text-shadow: 0 0 10px rgba(31, 31, 31, 0.83);
 }
 
 .text-qoute:hover{
-    color: #fcf9f9;
+    color: #232323;
     transform: scale(1.01);
     text-shadow: none;
 
@@ -189,21 +189,18 @@
     font-size: calc(4px + 3 * ((100vw - 120px) / 120));
     line-height: 42px;
 
-    color: #FFFFFF
-}
+    color: #232323;}
 
 .header-h2 {
     padding-bottom: 3%;
-    color: rgb(230, 215, 255)
-}
+    color: #232323;}
 
 .btn-icon {
     height: 83px;
     width: 83px;
     padding: 10px;
     opacity: 80%;
-    color: rgba(230, 215, 255, 0.63)
-}
+    color: #232323;}
 
 .db-dialog {
     border-radius: var(--lumo-border-radius);
@@ -211,24 +208,18 @@
 }
 
 .btn-dialog {
-    color: rgba(247, 243, 253, 0.96)
-}
+    color: #232323;}
 
 .headline {
-    color: rgba(247, 243, 253, 0.96)
-}
+    color: #232323;}
 
 .flash-more-btn {
-    color: rgba(247, 243, 253, 0.96)
-}
+    color: #232323;}
 
 .flash-card{
     grid-column: auto;
 }
 
-.flash-item{
-    color: #37d254;
-}
 
 .sub {
     align-self: self-start;
@@ -236,28 +227,30 @@
     opacity: 80%;
     font-size: 12px;
     position: fixed;
-    color: rgba(247, 243, 253, 0.96)
+    color: #232323;
 }
 
 .flash-item-title {
     font-size: var(--lumo-font-size-xxl);
-    color: rgba(247, 243, 253, 0.96);
+    color: #232323;
     justify-content: start;
 }
 
 .flash-item-detail {
     align-self: self-start;
-    color: rgba(247, 243, 253, 0.96)
+    color: #232323;
+
 }
 
 .flash-item-question {
     align-self: self-start;
-    color: rgba(247, 243, 253, 0.96)
+    color: #232323;
+
 }
 
 .dialog-title{
     padding-left: 20px;
-    color: #FFFFFF
+    color: #232323;
 }
 
 .footer{
