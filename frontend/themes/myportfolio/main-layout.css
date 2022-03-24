@@ -74,6 +74,12 @@
         margin-left: 20px;
         color: #C8C8C8;
     }
+
+    .not-found-layout .not-found-img{
+        height: 80%;
+        width: 80%;
+        align-self: center;
+    }
 }
 
 .tab-main {
@@ -117,6 +123,12 @@
     height: 414px;
     top: 195px;
     left: 830px;
+}
+
+.not-found-img{
+    height: 40%;
+    width: 40%;
+    align-self: center;
 }
 
 .h1-head {

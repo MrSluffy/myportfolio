@@ -25,7 +25,7 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
     HorizontalLayout layout = new HorizontalLayout();
 
     Image imgShape = new Image("images/image-shape.png", "business-shape-bg");
-    Image imgBusiness = new Image("images/image-business.png", "business");
+    Image imgBusiness = new Image("images/image-busines.png", "business");
     Image gif = new Image("images/business-team.gif", "gif");
 
 
