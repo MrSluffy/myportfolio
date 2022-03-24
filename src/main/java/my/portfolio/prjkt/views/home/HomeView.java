@@ -3,10 +3,9 @@ package my.portfolio.prjkt.views.home;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H4;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,6 +19,7 @@ import java.util.Random;
 @PageTitle("Home")
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
+@JsModule("https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js")
 public class HomeView extends VerticalLayout implements HasComponents, HasStyle {
 
     HorizontalLayout layout = new HorizontalLayout();
@@ -33,13 +33,13 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
     private final String[] mRandomGreetings = new String[]{"simple.", "unique.", "Andrew"};
 
     public HomeView() {
-
+        setSpacing(true);
         addClassName("home-view");
-        addClassNames("image-list-view", "items-center","max-w-screen-lg", "mx-auto", "pb-l", "px-l");
-
-        setWidthFull();
-
+        addClassNames("items-center","max-w-screen-lg", "mx-auto");
+        UI.getCurrent().getPage()
+                .addJsModule("https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js");
         add(configureContent());
+
     }
 
     private Component configureContent() {
@@ -57,8 +57,11 @@ public class HomeView extends VerticalLayout implements HasComponents, HasStyle 
         layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         layout.setSizeFull();
         gif.addClassName("gif-view");
+        Div div = new Div();
+        div.setSizeFull();
+        div.getElement().setProperty("innerHTML", "<lottie-player class=\"gif-view\" src=\"https://assets10.lottiefiles.com/packages/lf20_sk5h1kfn.json\"  background=\"transparent\"  speed=\"1\" loop  autoplay></lottie-player>");
         var vr = new VerticalLayout(head, text, qoute);
-        layout.add(vr, gif);
+        layout.add(vr, div);
         return layout;
     }
 
