@@ -45,11 +45,12 @@ public class FlashCardListItem extends ListItem {
     private final String reference;
     private final String question;
     private final String answer;
-    private String username;
+    private final String username;
+    private boolean isCorrect;
     private final FlashCardServiceImp service;
     HorizontalLayout horlayout = new HorizontalLayout();
 
-    Icon confirmed;
+    Icon checked;
 
     public FlashCardListItem(Integer id,
                              String title,
@@ -59,6 +60,7 @@ public class FlashCardListItem extends ListItem {
                              String question,
                              String answer,
                              String username,
+                             boolean isCorrect,
                              FlashCardServiceImp service) {
         this.id = id;
         this.title = title;
@@ -67,10 +69,11 @@ public class FlashCardListItem extends ListItem {
         this.question = question;
         this.answer = answer;
         this.username = username;
+        this.isCorrect = isCorrect;
         this.service = service;
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
         addClassName("material-list");
-        this.confirmed = createIcon(VaadinIcon.CHECK, "", "");
+        this.checked = createIcon(VaadinIcon.CHECK, "", "");
         horlayout.addClassNames("flex", "items-start");
         horlayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         horlayout.setWidthFull();
@@ -104,8 +107,9 @@ public class FlashCardListItem extends ListItem {
         subMenu.addItem("Delete", listenerDel);
         subMenu.add(new Hr());
         subMenu.addItem("Report");
-        horlayout.add(header);
+        horlayout.add(header, checked);
 
+        checked.setVisible(isCorrect);
 
         Span subtitle = new Span();
 
@@ -217,10 +221,7 @@ public class FlashCardListItem extends ListItem {
         submit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         submit.addClassName("btn-dialog");
 
-        submit.addClickListener(event ->{
-            horlayout.add(confirmed);
-            itemLayout.close();
-        });
+        submit.addClickListener(event -> checkedAnswer(itemLayout, itemAnswerField));
 
         var hl = new HorizontalLayout();
         hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
@@ -230,6 +231,26 @@ public class FlashCardListItem extends ListItem {
         layout.add(section, itemDetail, itemQuestion, itemAnswerField, hl);
 
         return layout;
+    }
+
+    private void checkedAnswer(Dialog itemLayout, TextArea itemAnswerField) {
+        if(answer.equals(itemAnswerField.getValue())){
+            isCorrect = true;
+            checked.setVisible(true);
+            submitAnswer();
+            itemLayout.close();
+            Notification.show("You get the correct answer!", 5000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        } else {
+            Notification.show("Wrong answer!", 5000, Notification.Position.TOP_CENTER)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+    }
+
+    private void submitAnswer() {
+        service.submitAnswer(id, isCorrect);
+        formDialog.close();
+        reload();
     }
 
     private VerticalLayout createDialogLayout(Dialog formDialog) {
@@ -294,14 +315,7 @@ public class FlashCardListItem extends ListItem {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.addClassName("btn-dialog");
 
-        save.addClickListener(buttonClickEvent -> {
-            editFlashCard(id,
-                    titleField.getValue(),
-                    descriptionField.getValue(),
-                    urlField.getValue(),
-                    questionField.getValue(),
-                    answerField.getValue());
-        });
+        save.addClickListener(buttonClickEvent -> updateFlashCard());
 
         var close = new Button("Cancel");
 
@@ -319,17 +333,37 @@ public class FlashCardListItem extends ListItem {
         return layout;
     }
 
-    private void editFlashCard(Integer id, String title, String detail, String reference, String question, String answer) {
+    private void updateFlashCard() {
+        editFlashCard(id,
+                titleField.getValue(),
+                descriptionField.getValue(),
+                urlField.getValue(),
+                questionField.getValue(),
+                answerField.getValue(),
+                isCorrect);
+    }
+
+    private void editFlashCard(Integer id,
+                               String title,
+                               String detail,
+                               String reference,
+                               String question,
+                               String answer,
+                               boolean isCorrect) {
         try {
-            service.update(id, title, detail, reference, question, answer);
+            service.update(id, title, detail, reference, question, answer, isCorrect);
+            reload();
             formDialog.close();
-            UI.getCurrent().getPage().reload();
         } catch (AuthException e) {
             Notification.show("You need to sign in as Guest or Create a new account",
                     5000,
                     Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
 
+    }
+
+    public void reload(){
+        UI.getCurrent().getPage().reload();
     }
 
     private MenuItem createIconItem(MenuBar menu, VaadinIcon iconName, String ariaLabel) {

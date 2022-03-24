@@ -210,6 +210,7 @@ public class MainLayout extends AppLayout implements Broadcaster.BroadcastListen
         } else {
             dialog.close();
             serviceImp.register(username, password1);
+            formDialog.open();
             Notification.show(username + " successfully register",
                             5000, Notification.Position.TOP_CENTER)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);

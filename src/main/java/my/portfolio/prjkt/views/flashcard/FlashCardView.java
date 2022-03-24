@@ -190,6 +190,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getCarqQuestion(),
                     flashCard.getCardAnswer(),
                     flashCard.getMyUserInFlashCard().getUserName(),
+                    flashCard.isCorrect(),
                     serviceImp));
         }
 

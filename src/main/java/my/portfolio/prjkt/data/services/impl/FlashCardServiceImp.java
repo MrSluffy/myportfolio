@@ -38,6 +38,7 @@ public class FlashCardServiceImp implements IFlashCardService {
             flashCard.getAddedByMyUser().add(user);
             flashCard.setMyUserInFlashCard(user);
             flashCard.setCardAnswer(answer);
+            flashCard.setCorrect(false);
             flashCard.setCarqQuestion(question);
             flashCardRepository.save(flashCard);
         } else {
@@ -47,7 +48,7 @@ public class FlashCardServiceImp implements IFlashCardService {
 
     @Transactional
     @Override
-    public void update(Integer id, String title, String detail, String reference, String question, String answer) throws AuthException {
+    public void update(Integer id, String title, String detail, String reference, String question, String answer, boolean isCorrect) throws AuthException {
         MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
         if(user != null){
             FlashCard flashCard = getById(id);
@@ -55,6 +56,7 @@ public class FlashCardServiceImp implements IFlashCardService {
             flashCard.setCardDetail(detail);
             flashCard.setCardReference(reference);
             flashCard.setCardAnswer(answer);
+            flashCard.setCorrect(isCorrect);
             flashCard.setCarqQuestion(question);
             flashCard.setMyUserInFlashCard(user);
             flashCardRepository.save(flashCard);
@@ -76,5 +78,12 @@ public class FlashCardServiceImp implements IFlashCardService {
     @Override
     public List<FlashCard> findAllCards() {
         return flashCardRepository.findAll();
+    }
+
+    @Override
+    public void submitAnswer(Integer id, boolean isCorrect) {
+        FlashCard flashCard = getById(id);
+        flashCard.setCorrect(isCorrect);
+        flashCardRepository.saveAndFlush(flashCard);
     }
 }
