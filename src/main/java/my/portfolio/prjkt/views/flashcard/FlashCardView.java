@@ -21,11 +21,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import my.portfolio.prjkt.data.entities.FlashCard;
+import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
 import my.portfolio.prjkt.views.MainLayout;
+
+import java.util.stream.Collectors;
 
 
 @PageTitle("Flash Card")
@@ -35,7 +38,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     private OrderedList flashList;
     private final FlashCardServiceImp serviceImp;
     private MyUserServiceImp myUserServiceImp;
-    private DeviceServiceImp device;
+    private final DeviceServiceImp device;
 
     Dialog formDialog = new Dialog();
 
@@ -130,7 +133,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         urlField.setWidthFull();
         urlField.setRequired(true);
         urlField.setLabel("Source");
-        urlField.setHelperText("https://www.github.com/source");
+        urlField.setHelperText("Example: https://www.github.com/source");
 
         VerticalLayout section = new VerticalLayout(titleField,
                 descriptionField, urlField, questionField, answerField);
@@ -181,6 +184,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     public void configureFlashes() {
 
         for(FlashCard flashCard : serviceImp.findAllCards()){
+
             flashList.add(new FlashCardListItem(
                     flashCard.getId(),
                     flashCard.getCardTitle(),
@@ -190,6 +194,13 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getCarqQuestion(),
                     flashCard.getCardAnswer(),
                     flashCard.getMyUserInFlashCard().getUserName(),
+                    flashCard.isCorrect(),
+                    flashCard.getCardNumber(),
+                    flashCard.getUserListCorrectAnswer()
+                            .stream()
+                            .map(MyUser::getUserName)
+                            .collect(Collectors.toList()),
+                    device,
                     serviceImp));
         }
 
