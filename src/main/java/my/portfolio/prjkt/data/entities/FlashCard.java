@@ -25,6 +25,8 @@ public class FlashCard extends AbstractEntity {
 
     private boolean isCorrect;
 
+    private int cardNumber;
+
     @OneToMany(mappedBy = "flashcard", orphanRemoval = true)
     private Set<MyUser> addedByMyUser = new HashSet<>();
 
@@ -117,5 +119,13 @@ public class FlashCard extends AbstractEntity {
 
     public void setCorrect(boolean correct) {
         isCorrect = correct;
+    }
+
+    public int getCardNumber() {
+        return cardNumber;
+    }
+
+    public void setCardNumber(int cardNumber) {
+        this.cardNumber = cardNumber;
     }
 }

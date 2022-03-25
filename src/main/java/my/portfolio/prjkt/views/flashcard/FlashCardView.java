@@ -130,7 +130,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         urlField.setWidthFull();
         urlField.setRequired(true);
         urlField.setLabel("Source");
-        urlField.setHelperText("https://www.github.com/source");
+        urlField.setHelperText("Example: https://www.github.com/source");
 
         VerticalLayout section = new VerticalLayout(titleField,
                 descriptionField, urlField, questionField, answerField);
@@ -181,6 +181,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     public void configureFlashes() {
 
         for(FlashCard flashCard : serviceImp.findAllCards()){
+
             flashList.add(new FlashCardListItem(
                     flashCard.getId(),
                     flashCard.getCardTitle(),
@@ -191,6 +192,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getCardAnswer(),
                     flashCard.getMyUserInFlashCard().getUserName(),
                     flashCard.isCorrect(),
+                    flashCard.getCardNumber(),
                     serviceImp));
         }
 

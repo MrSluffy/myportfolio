@@ -28,15 +28,20 @@ public class FlashCardServiceImp implements IFlashCardService {
     @Override
     public void save(String title, String detail, String reference, String answer, String question) throws AuthException {
         MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
+        FlashCard flashCard = new FlashCard();
+        int flashCardNumber = 0;
 
         if (user != null) {
-            FlashCard flashCard = new FlashCard();
+            for(int i = 0; i <= findAllCards().size(); i++){
+                flashCardNumber = i + 1;
+            }
             flashCard.setCardTitle(title);
             flashCard.setCardDetail(detail);
             flashCard.setCardReference(reference);
             flashCard.setCardDate(LocalDateTime.now().toLocalDate().toString());
             flashCard.getAddedByMyUser().add(user);
             flashCard.setMyUserInFlashCard(user);
+            flashCard.setCardNumber(flashCardNumber);
             flashCard.setCardAnswer(answer);
             flashCard.setCorrect(false);
             flashCard.setCarqQuestion(question);

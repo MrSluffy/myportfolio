@@ -47,7 +47,9 @@ public class FlashCardListItem extends ListItem {
     private final String answer;
     private final String username;
     private boolean isCorrect;
+    private final int flashCardNumber;
     private final FlashCardServiceImp service;
+
     HorizontalLayout horlayout = new HorizontalLayout();
 
     Icon checked;
@@ -61,6 +63,7 @@ public class FlashCardListItem extends ListItem {
                              String answer,
                              String username,
                              boolean isCorrect,
+                             int flashCardNumber,
                              FlashCardServiceImp service) {
         this.id = id;
         this.title = title;
@@ -70,6 +73,7 @@ public class FlashCardListItem extends ListItem {
         this.answer = answer;
         this.username = username;
         this.isCorrect = isCorrect;
+        this.flashCardNumber = flashCardNumber;
         this.service = service;
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
         addClassName("material-list");
@@ -98,6 +102,7 @@ public class FlashCardListItem extends ListItem {
         Span header = new Span();
         header.addClassNames("text-xl", "font-semibold");
         header.setText(title);
+        header.add(" #" + flashCardNumber);
         MenuBar menuBar = new MenuBar();
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
         menuBar.setOpenOnHover(true);

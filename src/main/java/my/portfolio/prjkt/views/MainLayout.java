@@ -110,6 +110,9 @@ public class MainLayout extends AppLayout implements Broadcaster.BroadcastListen
         btnLoginForm1.addClickListener(event -> {
             try {
                 serviceImp.authenticate(loginUsername1.getValue(), loginPassword.getValue());
+                Notification.show(  "Login successfully!",
+                                5000, Notification.Position.TOP_CENTER)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 formDialog.close();
             } catch (AuthException e) {
                 Notification.show("Wrong credentials",
