@@ -35,7 +35,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     private OrderedList flashList;
     private final FlashCardServiceImp serviceImp;
     private MyUserServiceImp myUserServiceImp;
-    private DeviceServiceImp device;
+    private final DeviceServiceImp device;
 
     Dialog formDialog = new Dialog();
 
@@ -193,6 +193,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getMyUserInFlashCard().getUserName(),
                     flashCard.isCorrect(),
                     flashCard.getCardNumber(),
+                    device,
                     serviceImp));
         }
 
