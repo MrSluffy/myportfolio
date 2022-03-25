@@ -21,11 +21,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import my.portfolio.prjkt.data.entities.FlashCard;
+import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
 import my.portfolio.prjkt.views.MainLayout;
+
+import java.util.stream.Collectors;
 
 
 @PageTitle("Flash Card")
@@ -193,6 +196,10 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     flashCard.getMyUserInFlashCard().getUserName(),
                     flashCard.isCorrect(),
                     flashCard.getCardNumber(),
+                    flashCard.getUserListCorrectAnswer()
+                            .stream()
+                            .map(MyUser::getUserName)
+                            .collect(Collectors.toList()),
                     device,
                     serviceImp));
         }

@@ -23,9 +23,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.server.VaadinSession;
+import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+
+import java.util.List;
 
 public class FlashCardListItem extends ListItem {
 
@@ -50,6 +55,7 @@ public class FlashCardListItem extends ListItem {
     private final String username;
     private boolean isCorrect;
     private final int flashCardNumber;
+    private List<String> answerBy;
     private DeviceServiceImp device;
     private final FlashCardServiceImp service;
 
@@ -67,6 +73,7 @@ public class FlashCardListItem extends ListItem {
                              String username,
                              boolean isCorrect,
                              int flashCardNumber,
+                             List<String> answerBy,
                              DeviceServiceImp device,
                              FlashCardServiceImp service) {
         this.id = id;
@@ -78,6 +85,7 @@ public class FlashCardListItem extends ListItem {
         this.username = username;
         this.isCorrect = isCorrect;
         this.flashCardNumber = flashCardNumber;
+        this.answerBy = answerBy;
         this.device = device;
         this.service = service;
         addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
@@ -87,18 +95,18 @@ public class FlashCardListItem extends ListItem {
         horlayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         horlayout.setWidthFull();
 
-
         configureDialog();
 
         VerticalLayout zomLayout = createLayout(itemLayout);
         zomLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
         itemLayout.add(zomLayout);
 
-        ComponentEventListener<ClickEvent<MenuItem>> listener = e -> formDialog.open();
+        ComponentEventListener<ClickEvent<MenuItem>> listenerEdit = e -> formDialog.open();
 
-        ComponentEventListener<ClickEvent<MenuItem>> listenerDel = e -> {
-            service.delete(id);
-            UI.getCurrent().getPage().reload();
+        ComponentEventListener<ClickEvent<MenuItem>> listenerDelete = e -> deleteCard(id, service);
+
+        ComponentEventListener<ClickEvent<MenuItem>> listenerHistory = e -> {
+
         };
 
 
@@ -111,8 +119,21 @@ public class FlashCardListItem extends ListItem {
         menuBar.setOpenOnHover(true);
         MenuItem item = createIconItem(menuBar, VaadinIcon.ELLIPSIS_DOTS_V, "more");
         SubMenu subMenu = item.getSubMenu();
-        subMenu.addItem("Edit", listener);
-        subMenu.addItem("Delete", listenerDel);
+        subMenu.addItem("Edit", listenerEdit);
+        subMenu.addItem("Delete", listenerDelete);
+        MenuItem menuAnswer = subMenu.addItem("Answered by");
+        SubMenu userList = menuAnswer.getSubMenu();
+        OrderedList orderedList = new OrderedList();
+        userList.addItem("Users");
+        for(String str : answerBy){
+            ListItem listItem = new ListItem(new Span(str));
+            listItem.setWidthFull();
+            orderedList.add(listItem);
+            userList.add(orderedList);
+        }
+
+        orderedList.addClassNames("list-none", "m-0", "p-0");
+
         subMenu.add(new Hr());
         subMenu.addItem("Report");
         horlayout.add(header, checked);
@@ -161,6 +182,11 @@ public class FlashCardListItem extends ListItem {
 
         add(horlayout, subtitle, anchorLayour, paragraph, bottomLayout);
 
+    }
+
+    private void deleteCard(Integer id, FlashCardServiceImp service) {
+        service.delete(id);
+        reload();
     }
 
     private void configureDialog() {
@@ -251,24 +277,43 @@ public class FlashCardListItem extends ListItem {
         return layout;
     }
 
-    private void checkedAnswer(Dialog itemLayout, TextArea itemAnswerField) {
-        if(answer.equals(itemAnswerField.getValue())){
-            isCorrect = true;
-            checked.setVisible(true);
-            submitAnswer();
-            itemLayout.close();
-            Notification.show("You get the correct answer!", 5000, Notification.Position.TOP_CENTER)
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        } else {
-            Notification.show("Wrong answer!", 5000, Notification.Position.TOP_CENTER)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+    private void checkedAnswer(Dialog itemLayout, TextArea itemAnswerField)
+            throws InvalidDataAccessApiUsageException {
+        MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
+        try{
+            if(answer.equals(itemAnswerField.getValue()) && user != null){
+                submitAnswer();
+                itemLayout.close();
+                notificationUtils("You get the correct answer!", NotificationVariant.LUMO_SUCCESS);
+            } else if(user == null){
+                notificationUtils("Failed to submit you need to sign-in first", NotificationVariant.LUMO_ERROR);
+            } else {
+                notificationUtils("Wrong answer!", NotificationVariant.LUMO_ERROR);
+            }
+        } catch (InvalidDataAccessApiUsageException e){
+            notificationUtils("Correct and you already responds to this card", NotificationVariant.LUMO_SUCCESS);
+            formDialog.close();
         }
+
     }
 
-    private void submitAnswer() {
-        service.submitAnswer(id, isCorrect);
-        formDialog.close();
-        reload();
+    private void submitAnswer(){
+        try {
+            isCorrect = true;
+            checked.setVisible(true);
+            service.submitAnswer(id, isCorrect);
+            formDialog.close();
+            reload();
+        } catch (AuthException e){
+            notificationUtils("Failed to submit you need to sign-in first", NotificationVariant.LUMO_ERROR);
+        }
+
+    }
+
+    private void notificationUtils(String text, NotificationVariant lumoError) {
+        Notification.show(text,
+                5000,
+                Notification.Position.TOP_CENTER).addThemeVariants(lumoError);
     }
 
     //TODO bind this @FlashCardView.class
@@ -386,9 +431,7 @@ public class FlashCardListItem extends ListItem {
             reload();
             formDialog.close();
         } catch (AuthException e) {
-            Notification.show("You need to sign in as Guest or Create a new account",
-                    5000,
-                    Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            notificationUtils("You need to sign in as Guest or Create a new account", NotificationVariant.LUMO_ERROR);
         }
 
     }

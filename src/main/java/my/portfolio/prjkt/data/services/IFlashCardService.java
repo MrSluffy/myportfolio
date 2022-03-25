@@ -17,5 +17,5 @@ public interface IFlashCardService {
 
     List<FlashCard> findAllCards();
 
-    void submitAnswer(Integer id, boolean isCorrect);
+    void submitAnswer(Integer id, boolean isCorrect) throws AuthException;
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import my.portfolio.prjkt.data.entities.abstracts.AbstractEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -27,6 +29,12 @@ public class FlashCard extends AbstractEntity {
 
     private int cardNumber;
 
+    @JsonIgnore
+    @ManyToOne(cascade={CascadeType.MERGE,
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "history_id", referencedColumnName = "id")
+    private History history;
+
     @OneToMany(mappedBy = "flashcard", orphanRemoval = true)
     private Set<MyUser> addedByMyUser = new HashSet<>();
 
@@ -35,6 +43,10 @@ public class FlashCard extends AbstractEntity {
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "flashcard_id", referencedColumnName = "id")
     private MyUser myUserInFlashCard;
+
+    @ManyToMany(cascade={CascadeType.MERGE,
+            CascadeType.REFRESH}, fetch = FetchType.LAZY)
+    private List<MyUser> userListCorrectAnswer = new ArrayList<>();
 
     public FlashCard(){
     }
@@ -127,5 +139,39 @@ public class FlashCard extends AbstractEntity {
 
     public void setCardNumber(int cardNumber) {
         this.cardNumber = cardNumber;
+    }
+
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(History history) {
+        this.history = history;
+    }
+
+    public List<MyUser> getUserListCorrectAnswer() {
+        return userListCorrectAnswer;
+    }
+
+    public void setUserListCorrectAnswer(List<MyUser> userListCorrectAnswer) {
+        this.userListCorrectAnswer = userListCorrectAnswer;
+    }
+
+    @Override
+    public String toString() {
+        return "FlashCard{" +
+                "cardTitle='" + cardTitle + '\'' +
+                ", cardDetail='" + cardDetail + '\'' +
+                ", cardReference='" + cardReference + '\'' +
+                ", cardDate='" + cardDate + '\'' +
+                ", cardAnswer='" + cardAnswer + '\'' +
+                ", carqQuestion='" + carqQuestion + '\'' +
+                ", isCorrect=" + isCorrect +
+                ", cardNumber=" + cardNumber +
+                ", history=" + history +
+                ", addedByMyUser=" + addedByMyUser +
+                ", myUserInFlashCard=" + myUserInFlashCard +
+                ", userListCorrectAnswer=" + userListCorrectAnswer +
+                '}';
     }
 }
