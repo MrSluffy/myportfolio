@@ -15,6 +15,8 @@ public class MyUser extends AbstractEntity implements Serializable {
     private String passwordSalt;
     private String passwordHash;
 
+    private int userCorrectAnswer;
+
     @JsonIgnore
     @ManyToOne(cascade={CascadeType.MERGE,
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
@@ -86,6 +88,14 @@ public class MyUser extends AbstractEntity implements Serializable {
 
     public void setFlashcard(FlashCard flashcard) {
         this.flashcard = flashcard;
+    }
+
+    public int getUserCorrectAnswer() {
+        return userCorrectAnswer;
+    }
+
+    public void setUserCorrectAnswer(int userCorrectAnswer) {
+        this.userCorrectAnswer = userCorrectAnswer;
     }
 }
 
