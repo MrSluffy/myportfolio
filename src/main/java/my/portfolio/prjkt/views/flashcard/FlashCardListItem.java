@@ -437,6 +437,11 @@ public class FlashCardListItem extends ListItem {
     }
 
     public void reload(){
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         UI.getCurrent().getPage().reload();
     }
 
