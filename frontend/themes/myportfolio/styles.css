@@ -42,7 +42,7 @@ html {
     --lumo-success-text-color: rgb(20, 184, 143);
     --lumo-success-color-50pct: rgba(20, 184, 143, 0.5);
     --lumo-success-color-10pct: rgba(20, 184, 143, 0.1);
-    --lumo-base-color: hsl(255, 0%, 7%);
+    --lumo-base-color: hsl(0, 0%, 8%);
     --lumo-tint: hsl(199, 100%, 98%);
     --lumo-shade: hsl(195, 46%, 4%);
     --lumo-primary-color: hsl(203, 92%, 71%);

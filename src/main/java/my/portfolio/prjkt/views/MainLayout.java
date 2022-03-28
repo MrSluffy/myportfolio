@@ -23,9 +23,11 @@ import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.dom.ThemeList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.theme.lumo.Lumo;
 import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
@@ -241,11 +243,28 @@ public class MainLayout extends AppLayout implements Broadcaster.BroadcastListen
                 formDialog.open();
             }
         });
-        var layout = new HorizontalLayout(tabExt);
+
+        Icon icon = new Icon(VaadinIcon.ADJUST);
+        icon.addClassNames("size-l");
+        icon.addClassName("icon-color");
+
+        var btn = new Button(icon);
+        btn.addClassName("theme-icon");
+
+        btn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
+        btn.addClickListener(event -> {
+            ThemeList themeList = UI.getCurrent().getElement().getThemeList(); //
+            if (themeList.contains(Lumo.DARK)) { //
+                themeList.remove(Lumo.DARK);
+            } else {
+                themeList.add(Lumo.DARK);
+            }
+        });
+        var layout = new HorizontalLayout(btn, tabExt);
         layout.addClassName("header-layout");
         layout.setWidthFull();
         layout.setHeight("3.9em");
-        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         Header header = new Header(viewTitle, layout);
