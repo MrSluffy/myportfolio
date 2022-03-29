@@ -10,6 +10,7 @@ import my.portfolio.prjkt.data.repository.IUserRepository;
 import my.portfolio.prjkt.data.services.IFlashCardService;
 import my.portfolio.prjkt.exceptions.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +69,7 @@ public class FlashCardServiceImp implements IFlashCardService {
                 history.setFlashCard(flashCard);
                 history.setActivityAuthor(user.getUserName());
                 history.setActivityLastChangeDate(LocalDateTime.now().toLocalDate().toString());
-                history.setActivityName(" added new card " + flashCardNumber);
+                history.setActivityName(" Added by " + user.getUserName());
                 historyRepository.save(history);
 
             } else {
@@ -105,7 +106,7 @@ public class FlashCardServiceImp implements IFlashCardService {
             history.setFlashCard(flashCard);
             history.setActivityAuthor(user.getUserName());
             history.setActivityLastChangeDate(LocalDateTime.now().toLocalDate().toString());
-            history.setActivityName(" updated card " + flashCard.getCardNumber());
+            history.setActivityName(" Updated by " + user.getUserName());
             historyRepository.save(history);
         }
 
@@ -139,7 +140,7 @@ public class FlashCardServiceImp implements IFlashCardService {
             flashCard.getUserListCorrectAnswer().add(user);
             flashCardRepository.saveAndFlush(flashCard);
 
-            history.setActivityName(" answered card " + flashCard.getCardNumber());
+            history.setActivityName(" Answered by " + user.getUserName());
             history.setActivityAuthor(user.getUserName());
             history.setActivityLastChangeDate(LocalDateTime.now().toLocalDate().toString());
             history.getFlashCardSet().add(flashCard);
@@ -155,5 +156,30 @@ public class FlashCardServiceImp implements IFlashCardService {
             throw new AuthException();
         }
 
+    }
+
+    @Override
+    public long flashCardCount() {
+        return flashCardRepository.count();
+    }
+
+    @Override
+    public List<History> findAllHistory(Integer id) {
+        return historyRepository.findByFlashCard(id);
+    }
+
+    @Override
+    public List<FlashCard> searchByTerm(String term) {
+        return flashCardRepository.search(term);
+    }
+
+    @Override
+    public List<FlashCard> findAll(String sortedBy) {
+        return switch (sortedBy) {
+            case "Default" -> flashCardRepository.findAll();
+            case "Descending" -> flashCardRepository.findAll(Sort.by(Sort.Direction.DESC, "cardTitle"));
+            case "Ascending" -> flashCardRepository.findAll(Sort.by(Sort.Direction.ASC, "cardTitle"));
+            default -> findAllCards();
+        };
     }
 }

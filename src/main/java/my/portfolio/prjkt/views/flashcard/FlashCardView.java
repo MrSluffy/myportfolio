@@ -15,11 +15,14 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import my.portfolio.prjkt.data.entities.FlashCard;
 import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
@@ -28,6 +31,7 @@ import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
 import my.portfolio.prjkt.views.MainLayout;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -37,7 +41,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     private OrderedList flashList;
     private final FlashCardServiceImp serviceImp;
-    private MyUserServiceImp myUserServiceImp;
+    private final MyUserServiceImp myUserServiceImp;
     private final DeviceServiceImp device;
 
     Dialog formDialog = new Dialog();
@@ -51,6 +55,11 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
 
     Button add = new Button("Add");
+
+    Button btnadd = new Button("Add");
+
+    Select<String> sortBy = new Select<>();
+
 
 
     public FlashCardView(FlashCardServiceImp serviceImp, MyUserServiceImp myUserServiceImp, DeviceServiceImp device) {
@@ -183,7 +192,9 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     public void configureFlashes() {
 
-        for(FlashCard flashCard : serviceImp.findAllCards()){
+        List<FlashCard> flashCardList = serviceImp.findAll(sortBy.getValue());
+
+        for(FlashCard flashCard : flashCardList){
 
             flashList.add(new FlashCardListItem(
                     flashCard.getId(),
@@ -204,6 +215,10 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
                     serviceImp));
         }
 
+        btnadd.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        btnadd.addClickListener( event -> formDialog.open());
+
         Icon icon = new Icon(VaadinIcon.PLUS);
         icon.addClassName("btn-icon");
         icon.addClassNames("size-l");
@@ -213,27 +228,49 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         btn.addClassNames("bg-contrast-5", "flex", "flex-col", "items-start", "p-m", "rounded-l");
         btn.setHeightFull();
         btn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
-        btn.addClickListener(event -> {
-            formDialog.open();
-        });
+        btn.addClickListener(event -> formDialog.open());
         flashList.add(btn);
+        btnadd.setVisible(serviceImp.flashCardCount() > 4);
+        btn.setVisible(serviceImp.flashCardCount() <= 4);
+        sortBy.setVisible(serviceImp.flashCardCount() > 2);
     }
 
     private void constructUI() {
-        addClassNames("image-list-view", "max-w-screen-lg", "mx-auto", "pb-l", "px-l");
+        addClassNames("image-list-view", "pb-l", "px-l");
+        addClassName("view-card");
         HorizontalLayout container = new HorizontalLayout();
-        container.addClassNames("items-center", "justify-between");
 
         VerticalLayout headerContainer = new VerticalLayout();
-        H2 header = new H2("Flashes");
+        var con = new HorizontalLayout();
+        con.addClassNames("items-center", "justify-between");
+        con.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        con.setWidthFull();
+        Label header = new Label("Flashes");
+        Paragraph sub = new Paragraph("Review your knowledge instantly");
+        sub.addClassName("sub-header");
+        sub.addClassNames("text-xl");
+
         header.addClassName("header-h2");
         header.addClassNames("mb-0", "mt-l", "text-3xl");
-        headerContainer.add(header);
 
         flashList = new OrderedList();
         flashList.addClassNames("gap-m", "grid", "list-none", "m-0", "p-0");
-        container.add(header);
-        add(container, flashList);
+        flashList.addClassName("flashcard");
 
+        container.add(header);
+        con.add(sortBy, btnadd);
+        headerContainer.setSpacing(false);
+        headerContainer.setPadding(false);
+        headerContainer.add(container, sub, con);
+
+        add(headerContainer, flashList);
+
+        sortBy.setLabel("Sort by");
+        sortBy.setItems("Ascending", "Descending", "Default");
+        sortBy.setValue("Default");
+        sortBy.addValueChangeListener( e-> {
+            flashList.removeAll();
+            configureFlashes();
+        });
     }
 }

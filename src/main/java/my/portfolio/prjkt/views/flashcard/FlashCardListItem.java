@@ -24,6 +24,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.server.VaadinSession;
+import my.portfolio.prjkt.data.entities.History;
 import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
@@ -135,7 +136,23 @@ public class FlashCardListItem extends ListItem {
         orderedList.addClassNames("list-none", "m-0", "p-0");
 
         subMenu.add(new Hr());
+        MenuItem menuHistory = subMenu.addItem("History");
+        SubMenu historyList = menuHistory.getSubMenu();
+        historyList.addItem("History", listenerHistory);
         subMenu.addItem("Report");
+
+        OrderedList historyOrderList = new OrderedList();
+
+        List<String> listOfHistory = service.findAllHistory(id).stream().map(History::getActivityName).toList();
+
+        for(String hisList : listOfHistory){
+            ListItem listItem = new ListItem(new Span(hisList));
+            listItem.setWidthFull();
+            historyOrderList.add(listItem);
+            historyList.add(historyOrderList);
+        }
+        historyOrderList.addClassNames("list-none", "m-0", "p-0");
+
         horlayout.add(header, checked);
 
         checked.setVisible(isCorrect);

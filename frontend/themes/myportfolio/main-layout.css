@@ -194,6 +194,11 @@
 .header-h2 {
     padding-bottom: 3%;
     color: #232323;
+    font-weight: bold;
+}
+
+.sub-header{
+    font-weight: bolder;
 }
 
 .btn-icon {
@@ -227,6 +232,10 @@
     color: #232323;
 }
 
+.flashcard{
+    margin-top: 2%;
+}
+
 .icon-color {
     color: rgba(66, 66, 66, 0.89);
 }
@@ -239,6 +248,10 @@
     grid-column: auto;
 }
 
+.view-card{
+    padding-right: 10%;
+    padding-left: 10%;
+}
 
 .sub {
     align-self: self-start;

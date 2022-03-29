@@ -3,6 +3,7 @@ package my.portfolio.prjkt.data.services;
 import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.exceptions.AuthException;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IMyUserService {
@@ -15,5 +16,7 @@ public interface IMyUserService {
     void authenticate(String username, String password) throws AuthException;
 
     MyUser getByUserName(String username);
+
+    List<MyUser> findAllUser();
 
 }
