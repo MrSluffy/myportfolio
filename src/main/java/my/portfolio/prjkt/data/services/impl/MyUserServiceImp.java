@@ -10,6 +10,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -65,5 +66,10 @@ public class MyUserServiceImp implements IMyUserService {
     @Override
     public MyUser getByUserName(String username) {
         return userRepository.getByUserName(username);
+    }
+
+    @Override
+    public List<MyUser> findAllUser() {
+        return userRepository.findAll();
     }
 }

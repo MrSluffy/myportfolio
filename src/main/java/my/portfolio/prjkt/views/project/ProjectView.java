@@ -311,7 +311,9 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
     }
 
     private void constructUI() {
-        addClassNames("image-list-view", "max-w-screen-lg", "mx-auto", "pb-l", "px-l");
+        addClassName("view-card");
+
+        addClassNames("image-list-view", "pb-l", "px-l");
 
         HorizontalLayout container = new HorizontalLayout();
         container.addClassNames("items-center", "justify-between");

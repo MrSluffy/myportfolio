@@ -239,6 +239,10 @@
     grid-column: auto;
 }
 
+.view-card{
+    padding-right: 10%;
+    padding-left: 10%;
+}
 
 .sub {
     align-self: self-start;
