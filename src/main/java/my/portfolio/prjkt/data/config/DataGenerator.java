@@ -17,8 +17,6 @@ import org.vaadin.artur.exampledata.ExampleDataGenerator;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SpringComponent
 public class DataGenerator {
@@ -46,9 +44,6 @@ public class DataGenerator {
 
             logger.info("Generating demo data");
 
-            List<TypePrjkt> prjkts = prjktRepository.saveAll(Stream.of("Android Apps", "WebApp", "Spring")
-                            .map(TypePrjkt::new).collect(Collectors.toList()));
-
             projectExampleDataGenerator = new ExampleDataGenerator<>(Project.class, LocalDateTime.now());
             projectExampleDataGenerator.setData(Project::setTitlePrjkt, DataType.COMPANY_NAME);
             projectExampleDataGenerator.setData(Project::setUrlPrjkt, DataType.PROFILE_PICTURE_URL);
@@ -68,27 +63,56 @@ public class DataGenerator {
 
             Random r = new Random(seed);
 
-            projectList.stream().map(project ->{
-                project.setTitlePrjkt(project.getTitlePrjkt());
-                project.setTypePrjkt(prjkts.get(r.nextInt(prjkts.size())));
-                project.setUrlPrjkt(project.getUrlPrjkt());
-                project.setDate(LocalDateTime.now().toLocalDate().toString());
-                return project;
-            }).collect(Collectors.toList());
+//            projectList.stream().map(project ->{
+//                project.setTitlePrjkt(project.getTitlePrjkt());
+//                project.setTypePrjkt(prjkts.get(r.nextInt(prjkts.size())));
+//                project.setUrlPrjkt(project.getUrlPrjkt());
+//                project.setDate(LocalDateTime.now().toLocalDate().toString());
+//                return project;
+//            }).collect(Collectors.toList());
+//
+//            flashCardList.stream().map(flashCard -> {
+//               flashCard.setCardTitle(flashCard.getCardTitle());
+//               flashCard.setCardDetail(flashCard.getCardDetail());
+//               flashCard.setCardReference(flashCard.getCardReference());
+//               flashCard.setCardDate(flashCard.getCardDate());
+//               return flashCard;
+//            });
 
-            flashCardList.stream().map(flashCard -> {
-               flashCard.setCardTitle(flashCard.getCardTitle());
-               flashCard.setCardDetail(flashCard.getCardDetail());
-               flashCard.setCardReference(flashCard.getCardReference());
-               flashCard.setCardDate(flashCard.getCardDate());
-               return flashCard;
-            });
+            TypePrjkt aApps = new TypePrjkt();
+            aApps.setName("Android Application");
+            if(prjktRepository.findByName("Android Application").isPresent()){
+                System.out.println("Already Exist");
+            } else {
+                prjktRepository.save(aApps);
+            }
+
+            TypePrjkt wApps = new TypePrjkt();
+            wApps.setName("Web Application");
+            if(prjktRepository.findByName("Web Application").isPresent()){
+                System.out.println("Already Exist");
+            } else {
+                prjktRepository.save(wApps);
+            }
+
+            TypePrjkt sApps = new TypePrjkt();
+            sApps.setName("Spring Application");
+            if(prjktRepository.findByName("Spring Application").isPresent()){
+                System.out.println("Already Exist");
+            } else {
+                prjktRepository.save(sApps);
+            }
+
+            TypePrjkt mApps = new TypePrjkt();
+            mApps.setName("Modified Android Apps");
+            if(prjktRepository.findByName("Modified Android Apps").isPresent()){
+                System.out.println("Already Exist");
+            } else {
+                prjktRepository.save(mApps);
+            }
+
 
 //            flashCardRepository.saveAll(flashCardList);
-
-            if(projectRepository.findAll().isEmpty()){
-                prjktRepository.saveAll(prjkts);
-            }
 
 //            projectRepository.saveAll(projectList);
 
