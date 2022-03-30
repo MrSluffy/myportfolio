@@ -1,15 +1,14 @@
 package my.portfolio.prjkt.views.flashcard;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasComponents;
-import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -29,6 +28,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import my.portfolio.prjkt.data.entities.FlashCard;
+import my.portfolio.prjkt.data.entities.History;
 import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
@@ -56,6 +56,9 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     Dialog aboutDialog = new Dialog();
 
+    Dialog urScoreDialog = new Dialog();
+
+
 
     TextField titleField = new TextField();
     TextArea descriptionField = new TextArea();
@@ -73,7 +76,11 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
     MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
 
+    Grid<MyUser> userGrid = new Grid<>(MyUser.class, false);
 
+    Grid<History> historyGrid = new Grid<>(History.class, true);
+
+    private boolean isShow;
 
 
     public FlashCardView(FlashCardServiceImp serviceImp, MyUserServiceImp myUserServiceImp, DeviceServiceImp device) {
@@ -252,6 +259,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         btnadd.setVisible(serviceImp.flashCardCount() > 4);
         btn.setVisible(serviceImp.flashCardCount() <= 4);
         sortBy.setVisible(serviceImp.flashCardCount() > 2);
+        updateList();
     }
 
     private void constructUI() {
@@ -260,12 +268,11 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         HorizontalLayout container = getFirstHeader();
         HorizontalLayout con = getSecHeader();
         Label header = new Label("Flashes");
-        Paragraph sub = new Paragraph("Review your knowledge instantly");
+        Paragraph sub = new Paragraph(serviceImp.findAllCards().size() > 0 ? "Review your knowledge instantly" : "Start to store your knowledge");
         sub.addClassName("sub-header");
         sub.addClassNames("text-xl");
-
         header.addClassName("header-h2");
-        header.addClassNames("mb-0", "mt-l", "text-3xl");
+        header.addClassNames("mb-0", "mt-l", "text-3xl", "inline-block");
 
         flashList = new OrderedList();
         flashList.addClassNames("gap-m", "grid", "list-none", "m-0", "p-0");
@@ -273,25 +280,167 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
         configureAboutDialog();
 
-        ComponentEventListener<ClickEvent<MenuItem>> listenerScore = e -> {
-        };
+        configureUrScoreDialog();
 
-        ComponentEventListener<ClickEvent<MenuItem>> listenerAbout = e -> {
-            aboutDialog.open();
+        isShow = false;
 
-        };
-
-        ComponentEventListener<ClickEvent<MenuItem>> listenerLogout = e -> new LogoutView();
-
-        MenuBar menuBar = getMenuBar(listenerScore, listenerAbout, listenerLogout);
+        MenuBar menuBar = getMenuBar();
 
         container.add(header, menuBar);
         con.add(sortBy, btnadd);
         VerticalLayout headerContainer = getHeaderContainer(container, con, sub);
 
+
         add(headerContainer, flashList);
 
+        add(getConfigureGrid());
+
+        updateList();
         configureSort();
+    }
+
+    private void configureUrScoreDialog() {
+        VerticalLayout dialogLayout = createUrScoreDialogLayout(urScoreDialog);
+        dialogLayout.addClassNames("max-w-screen-lg", "mx-auto");
+        dialogLayout.addClassName("about-dialog");
+        urScoreDialog.add(dialogLayout);
+        urScoreDialog.setDraggable(true);
+        urScoreDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
+        urScoreDialog.getElement().setAttribute("aria-label", "About");
+    }
+
+    private VerticalLayout createUrScoreDialogLayout(Dialog urScoreDialog) {
+        var layout = new VerticalLayout();
+        H4 head = new H4("Your Score");
+        head.addClassName("header-bold");
+        head.addClassNames("mb-0", "mt-l", "text-3xl");
+        H1 sub = new H1(String.valueOf(user != null ? user.getUserCorrectAnswer() : 0));
+
+        sub.addClassNames("header-bold");
+
+        Icon icon = new Icon(VaadinIcon.CLOSE_SMALL);
+        icon.addClassName("btn-close-icon");
+        icon.addClassNames("size-s");
+
+
+        var btnClose = new Button(icon);
+        btnClose.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        btnClose.addClickListener(e-> urScoreDialog.close());
+
+        btnClose.getStyle().set("marginRight", "var(--lumo-icon-size-m)");
+        btnClose.getStyle().set("marginTop", "var(--lumo-icon-size-s)");
+
+        var header = new HorizontalLayout();
+        header.add(btnClose);
+        header.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        header.setWidthFull();
+
+        layout.add(header, head, sub);
+        layout.setSpacing(false);
+        layout.setPadding(false);
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        layout.getStyle().set("width", "360px").set("max-width", "100%");
+        return layout;
+    }
+
+    private Component getConfigureGrid() {
+        var layoutGrid = new VerticalLayout();
+        layoutGrid.addClassName("grid-configure");
+        HorizontalLayout scoreBoard = getScoreBoardLayout();
+        HorizontalLayout historyTracker = getHistoryLayout();
+        Label scoreHeader = new Label("Score Board");
+        scoreHeader.addClassName("header-h2");
+        scoreHeader.addClassNames("mb-0", "mt-l", "text-3xl");
+
+        Label historyHeader = new Label("History");
+        historyHeader.addClassName("header-h2");
+        historyHeader.addClassNames("mb-0", "mt-l", "text-3xl");
+
+
+        var verScore = new VerticalLayout();
+        verScore.setPadding(false);
+        verScore.setSpacing(false);
+        verScore.add(scoreHeader, scoreBoard);
+        verScore.addClassNames("inline-block");
+        verScore.getStyle().set("width", "360px").set("max-width", "100%");
+
+
+        var verHistory = new VerticalLayout();
+        verHistory.setPadding(false);
+        verHistory.setSpacing(false);
+        verHistory.addClassNames("inline-block");
+
+        verHistory.add(historyHeader, historyTracker);
+        var main = new HorizontalLayout(verScore, verHistory);
+
+        main.addClassNames("gap-m", "m-0", "p-0", "items-center");
+        main.addClassName("main-grid");
+
+        main.setSizeFull();
+        main.setAlignItems(FlexComponent.Alignment.CENTER);
+        main.setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        layoutGrid.add(main);
+
+        layoutGrid.setWidthFull();
+        layoutGrid.setSpacing(false);
+        layoutGrid.setPadding(false);
+        return layoutGrid;
+    }
+
+    private HorizontalLayout getHistoryLayout() {
+        Grid<History> historyGrid = getHistoryGrid();
+        historyGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+
+        var layout = new HorizontalLayout();
+        layout.add(historyGrid);
+        historyGrid.addClassNames("flex", "flex-col", "items-start", "p-m", "rounded-l");
+        layout.setWidthFull();
+        return layout;
+    }
+
+    private void updateList(){
+        historyGrid.setItems(serviceImp.findAllHistory());
+        userGrid.setItems(myUserServiceImp.findAllUser());
+
+    }
+
+    private Grid<History> getHistoryGrid() {
+        historyGrid.setWidthFull();
+        historyGrid.setColumns(
+                "activityAuthor",
+                "historyName",
+                "activityLastChangeDate");
+        historyGrid.getColumns().get(0)
+                .setHeader("User Name");
+        historyGrid.getColumns().get(1)
+                .setHeader("Activity");
+        historyGrid.getColumns().get(2)
+                .setHeader("Date");
+        historyGrid.getColumns().forEach(historyColumn -> historyColumn.setAutoWidth(true));
+        return historyGrid;
+    }
+
+    private HorizontalLayout getScoreBoardLayout() {
+        Grid<MyUser> userGrid = getScoreBoard();
+        var layout = new HorizontalLayout();
+        userGrid.addClassNames("flex", "flex-col", "items-start", "p-m", "rounded-l");
+        layout.add(userGrid);
+        layout.getStyle().set("width", "360px").set("max-width", "100%");
+        return layout;
+    }
+
+    private Grid<MyUser> getScoreBoard() {
+        userGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        userGrid.setColumns(
+                "userName",
+                "userCorrectAnswer");
+        userGrid.getColumns().get(0)
+                .setHeader("Users");
+        userGrid.getColumns().get(1)
+                .setHeader("Score");
+        userGrid.getColumns().forEach(historyColumn -> historyColumn.setAutoWidth(true));
+
+        return userGrid;
     }
 
     private void configureAboutDialog() {
@@ -383,21 +532,28 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         return con;
     }
 
-    private MenuBar getMenuBar(ComponentEventListener<ClickEvent<MenuItem>> listenerScore,
-                               ComponentEventListener<ClickEvent<MenuItem>> listenerAbout,
-                               ComponentEventListener<ClickEvent<MenuItem>> listenerLogout) {
+    private MenuBar getMenuBar() {
+        ComponentEventListener<ClickEvent<MenuItem>> listenerScore = e -> urScoreDialog.open();
+
+        ComponentEventListener<ClickEvent<MenuItem>> listenerAbout = e -> aboutDialog.open();
+
+        ComponentEventListener<ClickEvent<MenuItem>> listenerLogout = e -> new LogoutView();
         MenuBar menuBar = new MenuBar();
         menuBar.addClassName("flash-container");
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
         menuBar.setOpenOnHover(true);
         MenuItem item = createIconItem(menuBar, VaadinIcon.ELLIPSIS_DOTS_V, "more");
         SubMenu subMenu = item.getSubMenu();
-        subMenu.addItem("Your Score", listenerScore);
+        if(user != null && user.getUserCorrectAnswer() >= 0){
+            subMenu.addItem("Your Score", listenerScore);
+        }
         if(user != null){
             subMenu.addItem("Logout", listenerLogout);
+
             subMenu.add(new Hr());
         }
         subMenu.addItem("About", listenerAbout);
+
 
         return menuBar;
     }

@@ -27,4 +27,6 @@ public interface IFlashCardService {
     List<FlashCard> searchByTerm(String term);
 
     List<FlashCard> findAll(String sortedBy);
+
+    List<History> findAllHistory();
 }

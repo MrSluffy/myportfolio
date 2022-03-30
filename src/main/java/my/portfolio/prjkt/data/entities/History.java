@@ -14,6 +14,8 @@ public class History extends AbstractEntity {
     private String activityLastChangeDate;
     private String activityAuthor;
 
+    private String historyName;
+
     @JsonIgnore
     @ManyToOne(cascade={CascadeType.MERGE,
             CascadeType.REFRESH}, fetch = FetchType.LAZY)
@@ -74,5 +76,13 @@ public class History extends AbstractEntity {
 
     public void setFlashCardSet(Set<FlashCard> flashCardSet) {
         this.flashCardSet = flashCardSet;
+    }
+
+    public String getHistoryName() {
+        return historyName;
+    }
+
+    public void setHistoryName(String historyName) {
+        this.historyName = historyName;
     }
 }
