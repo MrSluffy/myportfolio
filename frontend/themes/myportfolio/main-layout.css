@@ -5,6 +5,10 @@
     .view-card .main-grid{
         flex-wrap: wrap;
     }
+
+    .profile .dp-profile{
+        margin-top: 155%;
+    }
     
     .home-view .image-business,
     .home-view .image-shape,
@@ -177,13 +181,53 @@
     margin-left: calc(460px + 6 * ((100vw - 320px) / 120));
 }
 
-.material-list {
+.text-content,
+.h1-head,
+.fb-profile,
+.material-list,
+.gh-profile,
+.tg-profile,
+.twit-profile,
+.name-profile,
+.title-profile,
+.dp-profile,
+.btn-icon,
+.gif-view{
     transition: transform .2s;
 }
 
-.material-list:hover {
-    transform: scale(1.01);
+.dp-profile{
+    margin-top: 42%;
 }
+
+.btn-profile{
+    margin-top: 30px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    border-radius: 30px;
+}
+
+.text-content:hover,
+.h1-head:hover,
+.gif-view:hover,
+.fb-profile:hover,
+.material-list:hover,
+.btn-icon:hover,
+.gh-profile:hover,
+.tg-profile:hover,
+.twit-profile:hover,
+.name-profile:hover,
+.title-profile:hover,
+.dp-profile:hover{
+    transform: scale(1.09);
+}
+
+.paragraph-profile{
+    margin-top: 6%;
+    padding: 8%;
+}
+
 
 .card-image {
     object-fit: cover;
@@ -379,6 +423,14 @@
     color: #232323;
 }
 
+.name-profile{
+    margin: 8px;
+}
+
+.title-profile{
+    margin: 8px;
+}
+
 
 .flash-item-question {
     align-self: self-start;
@@ -393,6 +445,10 @@
 
 .footer {
     padding-right: 20px;
+}
+
+.social-profile{
+    margin-top: 20px;
 }
 
 /*START DARK THEME*/
