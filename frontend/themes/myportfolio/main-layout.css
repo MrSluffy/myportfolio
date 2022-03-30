@@ -2,6 +2,10 @@
 
 
 @media all and (max-width: 800px) {
+    .view-card .main-grid{
+        flex-wrap: wrap;
+    }
+    
     .home-view .image-business,
     .home-view .image-shape,
     .home-view .h1-head,
@@ -277,6 +281,12 @@
     font-weight: bold;
 }
 
+.header-bold {
+    font-weight: bold;
+    align-self: center;
+    display: flex;
+}
+
 .sub-header{
     font-weight: bolder;
 }
@@ -285,6 +295,11 @@
     height: 83px;
     width: 83px;
     padding: 10px;
+    opacity: 80%;
+    color: #232323;
+}
+
+.btn-close-icon {
     opacity: 80%;
     color: #232323;
 }
@@ -337,6 +352,10 @@
 .view-card{
     padding-right: 10%;
     padding-left: 10%;
+}
+
+.grid-configure{
+    margin-top: 3%;
 }
 
 .sub {
@@ -420,6 +439,11 @@
     color: rgba(255, 255, 255, 0.87);
     transform: scale(1.01);
     text-shadow: none;
+}
+
+[theme~="dark"] .btn-close-icon {
+    opacity: 80%;
+    color: rgba(255, 255, 255, 0.87);
 }
 
 

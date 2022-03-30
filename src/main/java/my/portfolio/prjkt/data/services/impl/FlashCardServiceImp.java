@@ -70,6 +70,7 @@ public class FlashCardServiceImp implements IFlashCardService {
                 history.setActivityAuthor(user.getUserName());
                 history.setActivityLastChangeDate(LocalDateTime.now().toLocalDate().toString());
                 history.setActivityName(" Added by " + user.getUserName());
+                history.setHistoryName("Added card # " + flashCard.getCardNumber());
                 historyRepository.save(history);
 
             } else {
@@ -107,6 +108,7 @@ public class FlashCardServiceImp implements IFlashCardService {
             history.setActivityAuthor(user.getUserName());
             history.setActivityLastChangeDate(LocalDateTime.now().toLocalDate().toString());
             history.setActivityName(" Updated by " + user.getUserName());
+            history.setHistoryName("Updated card # " + flashCard.getCardNumber());
             historyRepository.save(history);
         }
 
@@ -141,6 +143,7 @@ public class FlashCardServiceImp implements IFlashCardService {
             flashCardRepository.saveAndFlush(flashCard);
 
             history.setActivityName(" Answered by " + user.getUserName());
+            history.setHistoryName("Answered card # " + flashCard.getCardNumber());
             history.setActivityAuthor(user.getUserName());
             history.setActivityLastChangeDate(LocalDateTime.now().toLocalDate().toString());
             history.getFlashCardSet().add(flashCard);
@@ -181,5 +184,10 @@ public class FlashCardServiceImp implements IFlashCardService {
             case "Ascending" -> flashCardRepository.findAll(Sort.by(Sort.Direction.ASC, "cardTitle"));
             default -> findAllCards();
         };
+    }
+
+    @Override
+    public List<History> findAllHistory() {
+        return historyRepository.findAll();
     }
 }
