@@ -1,14 +1,20 @@
 package my.portfolio.prjkt.views.flashcard;
 
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasComponents;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -21,8 +27,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
+import com.vaadin.flow.server.VaadinSession;
 import my.portfolio.prjkt.data.entities.FlashCard;
 import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
@@ -30,9 +35,12 @@ import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
 import my.portfolio.prjkt.views.MainLayout;
+import my.portfolio.prjkt.views.session.LogoutView;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static my.portfolio.prjkt.util.Utilities.createIconItem;
 
 
 @PageTitle("Flash Card")
@@ -45,6 +53,9 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     private final DeviceServiceImp device;
 
     Dialog formDialog = new Dialog();
+
+    Dialog aboutDialog = new Dialog();
+
 
     TextField titleField = new TextField();
     TextArea descriptionField = new TextArea();
@@ -59,6 +70,9 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     Button btnadd = new Button("Add");
 
     Select<String> sortBy = new Select<>();
+
+    MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
+
 
 
 
@@ -78,7 +92,6 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     private void configureDialog() {
         VerticalLayout dialogLayout = createDialogLayout(formDialog);
         formDialog.add(dialogLayout);
-        formDialog.setMinWidth(device.isMobile() ? "80%" : "33%");
         formDialog.setModal(false);
         formDialog.setDraggable(true);
         formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
@@ -88,7 +101,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
 
 
     private VerticalLayout createDialogLayout(Dialog formDialog) {
-        H3 dialogTitle = new H3("Create new flashcard");
+        H3 dialogTitle = new H3("Create flashcard");
         dialogTitle.addClassName("dialog-title");
 
         Header header = new Header(dialogTitle);
@@ -116,7 +129,7 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         dialogContent.getStyle().remove("width");
         dialogContent.setAlignItems(FlexComponent.Alignment.STRETCH);
         dialogContent.setClassName("dialog-no-padding-example-overlay");
-
+        dialogContent.getStyle().set("width", "380px").set("max-width", "100%");
 
         return dialogContent;
     }
@@ -161,7 +174,13 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         add.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         add.addClickListener(buttonClickEvent -> {
-            addNewFlashCard(titleField.getValue(), descriptionField.getValue(), urlField.getValue(), answerField.getValue(), questionField.getValue());
+            if(!titleField.isEmpty() || !descriptionField.isEmpty() || !urlField.isEmpty() || !answerField.isEmpty() || !questionField.isEmpty()){
+                addNewFlashCard(titleField.getValue(), descriptionField.getValue(), urlField.getValue(), answerField.getValue(), questionField.getValue());
+            } else {
+                Notification.show("Field cannot be empty",
+                        5000,
+                        Notification.Position.TOP_CENTER).addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
         });
         Button cancelButton = new Button("Cancel", e -> dialog.close());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
@@ -238,13 +257,8 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     private void constructUI() {
         addClassNames("image-list-view", "pb-l", "px-l");
         addClassName("view-card");
-        HorizontalLayout container = new HorizontalLayout();
-
-        VerticalLayout headerContainer = new VerticalLayout();
-        var con = new HorizontalLayout();
-        con.addClassNames("items-center", "justify-between");
-        con.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        con.setWidthFull();
+        HorizontalLayout container = getFirstHeader();
+        HorizontalLayout con = getSecHeader();
         Label header = new Label("Flashes");
         Paragraph sub = new Paragraph("Review your knowledge instantly");
         sub.addClassName("sub-header");
@@ -257,14 +271,91 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         flashList.addClassNames("gap-m", "grid", "list-none", "m-0", "p-0");
         flashList.addClassName("flashcard");
 
-        container.add(header);
+        configureAboutDialog();
+
+        ComponentEventListener<ClickEvent<MenuItem>> listenerScore = e -> {
+        };
+
+        ComponentEventListener<ClickEvent<MenuItem>> listenerAbout = e -> {
+            aboutDialog.open();
+
+        };
+
+        ComponentEventListener<ClickEvent<MenuItem>> listenerLogout = e -> new LogoutView();
+
+        MenuBar menuBar = getMenuBar(listenerScore, listenerAbout, listenerLogout);
+
+        container.add(header, menuBar);
         con.add(sortBy, btnadd);
-        headerContainer.setSpacing(false);
-        headerContainer.setPadding(false);
-        headerContainer.add(container, sub, con);
+        VerticalLayout headerContainer = getHeaderContainer(container, con, sub);
 
         add(headerContainer, flashList);
 
+        configureSort();
+    }
+
+    private void configureAboutDialog() {
+        VerticalLayout dialogLayout = createAboutDialogLayout(aboutDialog);
+        dialogLayout.addClassNames("max-w-screen-lg", "mx-auto");
+        dialogLayout.addClassName("about-dialog");
+        aboutDialog.add(dialogLayout);
+        aboutDialog.setDraggable(true);
+        aboutDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
+        aboutDialog.getElement().setAttribute("aria-label", "About");
+    }
+
+    private VerticalLayout createAboutDialogLayout(Dialog aboutDialog) {
+        var layout = new VerticalLayout();
+        H4 head = new H4("About Flashcard");
+        head.addClassName("sub-header");
+
+
+        layout.setSpacing(false);
+        var headerLayout = new HorizontalLayout();
+        headerLayout.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "items-center", "w-full");
+        Anchor spring = new Anchor("", "Spring boot");
+        spring.addClassNames("text-l");
+        spring.setHref("https://spring.io/projects/spring-boot");
+        Anchor github = new Anchor("", "source");
+        github.addClassNames("text-l");
+        github.setHref("https://github.com/MrSluffy/myportfolio");
+        Anchor vaadin = new Anchor("", "Vaadin");
+        vaadin.addClassNames("text-l");
+        vaadin.setHref("https://vaadin.com/docs/latest/");
+        headerLayout.add(head);
+        Paragraph sub = new Paragraph("Flash Card is a mixed of To-Do application and Quiz Application with a twist." +
+                " I create this to help myself to review and test my knowledge and I hope you can find it helpful too" +
+                " because I'm quite a bit forgetful HAHA. This project is created using ");
+        sub.addClassNames("text-l");
+        sub.add(spring);
+        sub.add(" for the backend and ");
+        sub.add(vaadin);
+        sub.add(" framework for the frontend.");
+        sub.add(" GitHub : ");
+        sub.add(github);
+
+        var closeBtn = new Button("Close");
+        closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        closeBtn.addClickListener(e-> aboutDialog.close());
+        var footer = new HorizontalLayout();
+        footer.setWidthFull();
+        footer.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        footer.add(closeBtn);
+        layout.add(headerLayout, sub, footer);
+        layout.getStyle().set("width", "360px").set("max-width", "100%");
+
+        return layout;
+    }
+
+    private VerticalLayout getHeaderContainer(HorizontalLayout container, HorizontalLayout con, Paragraph sub) {
+        VerticalLayout headerContainer = new VerticalLayout();
+        headerContainer.setSpacing(false);
+        headerContainer.setPadding(false);
+        headerContainer.add(container, sub, con);
+        return headerContainer;
+    }
+
+    private void configureSort() {
         sortBy.setLabel("Sort by");
         sortBy.setItems("Ascending", "Descending", "Default");
         sortBy.setValue("Default");
@@ -272,5 +363,42 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
             flashList.removeAll();
             configureFlashes();
         });
+    }
+
+    private HorizontalLayout getFirstHeader() {
+        HorizontalLayout container = new HorizontalLayout();
+        container.setWidthFull();
+        container.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        container.addClassNames("flex-wrap", "items-center", "justify-between");
+        container.setPadding(false);
+        container.setSpacing(false);
+        return container;
+    }
+
+    private HorizontalLayout getSecHeader() {
+        var con = new HorizontalLayout();
+        con.addClassNames("items-center", "justify-between");
+        con.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        con.setWidthFull();
+        return con;
+    }
+
+    private MenuBar getMenuBar(ComponentEventListener<ClickEvent<MenuItem>> listenerScore,
+                               ComponentEventListener<ClickEvent<MenuItem>> listenerAbout,
+                               ComponentEventListener<ClickEvent<MenuItem>> listenerLogout) {
+        MenuBar menuBar = new MenuBar();
+        menuBar.addClassName("flash-container");
+        menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
+        menuBar.setOpenOnHover(true);
+        MenuItem item = createIconItem(menuBar, VaadinIcon.ELLIPSIS_DOTS_V, "more");
+        SubMenu subMenu = item.getSubMenu();
+        subMenu.addItem("Your Score", listenerScore);
+        if(user != null){
+            subMenu.addItem("Logout", listenerLogout);
+            subMenu.add(new Hr());
+        }
+        subMenu.addItem("About", listenerAbout);
+
+        return menuBar;
     }
 }

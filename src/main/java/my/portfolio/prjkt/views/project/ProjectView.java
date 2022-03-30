@@ -24,7 +24,10 @@ import com.vaadin.flow.component.upload.receivers.MultiFileMemoryBuffer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+import my.portfolio.prjkt.data.entities.MyUser;
 import my.portfolio.prjkt.data.entities.Project;
+import my.portfolio.prjkt.data.entities.Role;
 import my.portfolio.prjkt.data.entities.TypePrjkt;
 import my.portfolio.prjkt.data.services.impl.ProjectServiceImp;
 import my.portfolio.prjkt.views.MainLayout;
@@ -49,6 +52,8 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
     Dialog formDialog = new Dialog();
 
     Button save = new Button("Save");
+
+    MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
 
 
     TextField titleField = new TextField();
@@ -308,6 +313,8 @@ public class ProjectView extends Main implements HasComponents, HasStyle {
         btn.addClickListener(event->formDialog.open());
         btn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ICON);
         imageContainer.add(btn);
+
+        btn.setVisible(user != null && user.getRole().equals(Role.ADMIN));
     }
 
     private void constructUI() {

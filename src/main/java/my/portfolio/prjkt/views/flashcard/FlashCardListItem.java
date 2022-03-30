@@ -26,12 +26,15 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.server.VaadinSession;
 import my.portfolio.prjkt.data.entities.History;
 import my.portfolio.prjkt.data.entities.MyUser;
+import my.portfolio.prjkt.data.entities.Role;
 import my.portfolio.prjkt.data.services.impl.DeviceServiceImp;
 import my.portfolio.prjkt.data.services.impl.FlashCardServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.util.List;
+
+import static my.portfolio.prjkt.util.Utilities.createIconItem;
 
 public class FlashCardListItem extends ListItem {
 
@@ -60,9 +63,18 @@ public class FlashCardListItem extends ListItem {
     private DeviceServiceImp device;
     private final FlashCardServiceImp service;
 
+    Paragraph itemDetail;
+
+    TextArea itemQuestion = new TextArea("Question");
+    TextArea itemAnswerField = new TextArea("Enter Answer");
+
+
     HorizontalLayout horlayout = new HorizontalLayout();
 
     Icon checked;
+
+    MyUser user = VaadinSession.getCurrent().getAttribute(MyUser.class);
+
 
     public FlashCardListItem(Integer id,
                              String title,
@@ -98,13 +110,21 @@ public class FlashCardListItem extends ListItem {
 
         configureDialog();
 
+        itemDetail = new Paragraph(detail);
+
         VerticalLayout zomLayout = createLayout(itemLayout);
-        zomLayout.addClassNames("flex", "items-start", "p-l", "rounded-l");
         itemLayout.add(zomLayout);
 
         ComponentEventListener<ClickEvent<MenuItem>> listenerEdit = e -> formDialog.open();
 
-        ComponentEventListener<ClickEvent<MenuItem>> listenerDelete = e -> deleteCard(id, service);
+        ComponentEventListener<ClickEvent<MenuItem>> listenerDelete = e -> {
+            if(user != null && user.getRole().equals(Role.ADMIN)){
+                deleteCard(id, service);
+            } else {
+                notificationUtils("You don't have permission to delete this card",
+                        NotificationVariant.LUMO_ERROR);
+            }
+        };
 
         ComponentEventListener<ClickEvent<MenuItem>> listenerHistory = e -> {
 
@@ -177,6 +197,7 @@ public class FlashCardListItem extends ListItem {
         subtitle.setText(date);
 
         Paragraph paragraph = new Paragraph(detail);
+        paragraph.setHeightFull();
 
         paragraph.addClassName("my-m");
 
@@ -210,7 +231,7 @@ public class FlashCardListItem extends ListItem {
         VerticalLayout dialogLayout = createDialogLayout(formDialog);
         formDialog.add(dialogLayout);
         formDialog.setModal(false);
-        formDialog.setMinWidth(device.isMobile() ? "80%" : "33%");
+        dialogLayout.addClassNames("max-w-screen-lg", "mx-auto");
         formDialog.setDraggable(true);
         formDialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
         formDialog.getElement().setAttribute("aria-label", "Edit flashcard");
@@ -234,64 +255,91 @@ public class FlashCardListItem extends ListItem {
         layout.setPadding(false);
         layout.addClassName("flash-dialog");
 
+
+
         layout.setMargin(false);
-        Section section = new Section();
-        section.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "h-xl", "items-end",
-                "w-full");
-        section.setWidthFull();
         H1 itemTitle = new H1(title);
-        var horiz = new HorizontalLayout();
-        horiz.setWidthFull();
-        horiz.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        horiz.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        itemTitle.addClassName("dialog-title");
+
+
+        Header header = new Header(itemTitle);
+        header.setWidthFull();
+        header.addClassNames("border-b", "border-contrast-10", "box-border", "flex", "items-center", "w-full");
         itemTitle.addClassName("flash-item-title");
         layout.addClassNames("flex", "flex-col", "items-start", "p-m", "rounded-l");
 
         var closeBtn = new Button(new Icon(VaadinIcon.CLOSE_SMALL));
         closeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         closeBtn.addClickListener(event -> itemLayout.close());
-
-        horiz.add(itemTitle, closeBtn);
-
-        section.add(horiz);
-
-
-        Paragraph itemDetail = new Paragraph(detail);
-        itemDetail.addClassName("flash-item-detail");
         itemTitle.setWidthFull();
-        itemDetail.addClassNames("text-xl");
 
-        TextArea itemQuestion = new TextArea("Question");
-        itemQuestion.setValue(question);
-        itemQuestion.setWidthFull();
-        itemQuestion.setReadOnly(true);
+        VerticalLayout createFields = createAnswerFields();
+        VerticalLayout scrollContent = new VerticalLayout(createFields);
+        Scroller scroller = new Scroller(scrollContent);
+        scroller.setHeight("400px");
 
-        var itemAnswerField = new TextArea("Enter Answer");
-        itemAnswerField.setWidthFull();
-        itemAnswerField.setRequired(true);
+        Footer footer = createFooter2(itemLayout);
+        footer.setHeight("70px");
+        footer.setWidthFull();
+        footer.addClassNames("bg-contrast-5", "flex", "items-center", "w-full");
 
         layout.setWidthFull();
 
         itemLayout.setModal(false);
         itemLayout.setDraggable(false);
         itemLayout.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
-        itemLayout.setMaxHeight("85%");
-        itemLayout.setMinWidth("36%");
+
+        layout.add(header,scroller, footer);
+
+        layout.setSpacing(false);
+        layout.setPadding(false);
+        layout.getStyle().remove("width");
+        layout.setAlignItems(FlexComponent.Alignment.STRETCH);
+        layout.setClassName("dialog-no-padding-example-overlay");
+
+        layout.getStyle().set("width", "380px").set("max-width", "100%");
+
+
+        return layout;
+    }
+
+    private Footer createFooter2(Dialog dialog) {
 
         var submit = new Button("Submit");
         submit.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         submit.addClassName("btn-dialog");
 
         submit.addClickListener(event -> checkedAnswer(itemLayout, itemAnswerField));
+        Button cancelButton = new Button("Cancel", e -> dialog.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        HorizontalLayout buttonLayout = new HorizontalLayout(cancelButton,
+                submit);
+        buttonLayout.setWidthFull();
+        buttonLayout
+                .setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        buttonLayout.addClassName("footer");
 
-        var hl = new HorizontalLayout();
-        hl.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        hl.setWidthFull();
-        hl.add(submit);
+        return new Footer(buttonLayout);
+    }
 
-        layout.add(section, itemDetail, itemQuestion, itemAnswerField, hl);
+    private VerticalLayout createAnswerFields() {
+        itemDetail.addClassName("flash-item-detail");
+        itemDetail.addClassNames("text-m");
 
-        return layout;
+        itemQuestion.setValue(question);
+        itemQuestion.setWidthFull();
+        itemQuestion.setReadOnly(true);
+
+        itemAnswerField.setWidthFull();
+        itemAnswerField.setRequired(true);
+        VerticalLayout section = new VerticalLayout(itemDetail,
+                itemQuestion, itemAnswerField);
+
+        section.setPadding(false);
+        section.setSpacing(false);
+        section.setAlignItems(FlexComponent.Alignment.STRETCH);
+        section.getElement().setAttribute("role", "region");
+        return section;
     }
 
     private void checkedAnswer(Dialog itemLayout, TextArea itemAnswerField)
@@ -364,8 +412,7 @@ public class FlashCardListItem extends ListItem {
         dialogContent.getStyle().remove("width");
         dialogContent.setAlignItems(FlexComponent.Alignment.STRETCH);
         dialogContent.setClassName("dialog-no-padding-example-overlay");
-
-
+        dialogContent.getStyle().set("width", "380px").set("max-width", "100%");
         return dialogContent;
     }
 
@@ -462,12 +509,4 @@ public class FlashCardListItem extends ListItem {
         UI.getCurrent().getPage().reload();
     }
 
-    private MenuItem createIconItem(MenuBar menu, VaadinIcon iconName, String ariaLabel) {
-        Icon icon = new Icon(iconName);
-        icon.addClassName("flash-more-btn");
-        MenuItem item = menu.addItem(icon);
-        item.getElement().setAttribute("aria-label", ariaLabel);
-
-        return item;
-    }
 }

@@ -80,6 +80,86 @@
         width: 80%;
         align-self: center;
     }
+
+    [theme~="dark"] .home-view [theme~="dark"] .image-business,
+    [theme~="dark"] .home-view [theme~="dark"] .image-shape,
+    [theme~="dark"] .home-view [theme~="dark"] .h1-head,
+    [theme~="dark"] .home-view [theme~="dark"] .text-content,
+    [theme~="dark"] .home-view [theme~="dark"] .content-layout {
+        transition: all 200ms cubic-bezier(0.4, 0.2, 0.2, 1);
+        max-width: 320px;
+        align-items: center;
+        justify-content: center;
+        justify-items: center;
+    }
+
+
+    [theme~="dark"] .home-view [theme~="dark"] .gif-view {
+        justify-items: center;
+        height: 280px;
+        width: 280px;
+        margin-top: -20px;
+        margin-left: -46px;
+    }
+
+    [theme~="dark"] .home-view [theme~="dark"] .image-business {
+        width: 338px;
+        height: 233px;
+        left: 0px;
+        top: 140px;
+    }
+
+    [theme~="dark"] .home-view [theme~="dark"] .gif-view {
+        justify-self: center;
+        align-items: center;
+    }
+
+    [theme~="dark"] .home-view [theme~="dark"] .image-shape {
+        width: 400.08px;
+        height: 300.75px;
+        left: -10px;
+    }
+
+    [theme~="dark"] .home-view [theme~="dark"] .h1-head {
+        line-height: 70px;
+        position: center;
+        left: 0px;
+        font-size: 56px;
+        top: 327.75px;
+        margin-left: 20px;
+    }
+
+    [theme~="dark"] .home-view [theme~="dark"] .text-content {
+        font-weight: 500;
+        font-size: 18px;
+        left: 0px;
+        top: 447.75px;
+        margin-left: 20px;
+    }
+
+
+    [theme~="dark"] .home-view [theme~="dark"] .text-qoute {
+        position: absolute;
+        width: auto;
+        height: 126px;
+        left: 0px;
+        top: 590px;
+        font-family: 'Poppins', sans-serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 36px;
+        transition: transform .2s;
+        margin-left: 20px;
+        /*color: #C8C8C8;*/
+    }
+
+    [theme~="dark"] .not-found-layout [theme~="dark"] .not-found-img {
+        height: 80%;
+        width: 80%;
+        align-self: center;
+    }
+
 }
 
 .tab-main {
@@ -230,6 +310,12 @@
 
 .flash-more-btn {
     color: #232323;
+}
+
+.flash-container{
+    height: 10px;
+    align-items: center;
+    padding-top: 3%;
 }
 
 .flashcard{
@@ -402,7 +488,6 @@
     padding-left: 20px;
     color: rgba(254, 254, 254, 1);
 }
-
 
 
 
