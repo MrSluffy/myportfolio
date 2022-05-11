@@ -36,6 +36,7 @@ import my.portfolio.prjkt.data.services.impl.MyUserServiceImp;
 import my.portfolio.prjkt.exceptions.AuthException;
 import my.portfolio.prjkt.views.MainLayout;
 import my.portfolio.prjkt.views.session.LogoutView;
+import org.vaadin.maxime.MarkdownArea;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,8 +65,8 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
     TextArea descriptionField = new TextArea();
     TextField urlField = new TextField();
 
-    TextField answerField = new TextField("Answer");
-    TextField questionField = new TextField("Question");
+    TextArea answerField = new TextArea("Answer");
+    TextArea questionField = new TextArea("Question");
 
 
     Button add = new Button("Add");
@@ -164,8 +165,12 @@ public class FlashCardView extends Main implements HasComponents, HasStyle {
         urlField.setLabel("Source");
         urlField.setHelperText("Example: https://www.github.com/source");
 
+        MarkdownArea markdownArea = new MarkdownArea("`var example = \"hello!\";`");
+
+        Span span = new Span(markdownArea.getValue());
+
         VerticalLayout section = new VerticalLayout(titleField,
-                descriptionField, urlField, questionField, answerField);
+                descriptionField, urlField, questionField, answerField, markdownArea);
         section.setPadding(false);
         section.setSpacing(false);
         section.setAlignItems(FlexComponent.Alignment.STRETCH);

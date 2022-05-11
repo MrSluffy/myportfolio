@@ -8,6 +8,8 @@
     "@polymer/iron-meta": "3.0.1",
     "@polymer/iron-resizable-behavior": "3.0.1",
     "@polymer/polymer": "3.4.1",
+    "@vaadin-component-factory/vcf-popup": "2.0.0",
+    "@vaadin-component-factory/vcf-toggle-button": "1.0.3",
     "@vaadin/accordion": "23.0.1",
     "@vaadin/app-layout": "23.0.1",
     "@vaadin/avatar": "23.0.1",
@@ -263,7 +265,9 @@
     "date-fns": "$date-fns",
     "lit": "$lit",
     "chokidar": "$chokidar",
-    "line-awesome": "$line-awesome"
+    "line-awesome": "$line-awesome",
+    "@vaadin-component-factory/vcf-popup": "$@vaadin-component-factory/vcf-popup",
+    "@vaadin-component-factory/vcf-toggle-button": "$@vaadin-component-factory/vcf-toggle-button"
   },
   "vaadin": {
     "dependencies": {
@@ -273,6 +277,8 @@
       "@polymer/iron-meta": "3.0.1",
       "@polymer/iron-resizable-behavior": "3.0.1",
       "@polymer/polymer": "3.4.1",
+      "@vaadin-component-factory/vcf-popup": "2.0.0",
+      "@vaadin-component-factory/vcf-toggle-button": "1.0.3",
       "@vaadin/accordion": "23.0.1",
       "@vaadin/app-layout": "23.0.1",
       "@vaadin/avatar": "23.0.1",
@@ -406,7 +412,7 @@
       "workbox-precaching": "6.5.0",
       "workbox-webpack-plugin": "6.5.0"
     },
-    "hash": "87bee44427fb0d2bc2c69528f1b0c3d394a63bd26c0994cc6944deb0dda49388"
+    "hash": "424de77e184fc4100016821e44039d49ae65dae219e75cad260560e8c654e8e7"
   },
   "scripts": {
     "dev": "react-scripts start",
